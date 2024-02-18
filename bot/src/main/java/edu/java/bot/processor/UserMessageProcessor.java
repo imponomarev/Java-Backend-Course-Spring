@@ -3,9 +3,9 @@ package edu.java.bot.processor;
 import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.request.SendMessage;
 import edu.java.bot.commands.Command;
-import org.springframework.stereotype.Component;
 import java.util.Collections;
 import java.util.List;
+import org.springframework.stereotype.Component;
 
 @Component
 public class UserMessageProcessor implements IUserMessageProcessor {

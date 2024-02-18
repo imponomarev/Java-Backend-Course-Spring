@@ -11,7 +11,8 @@ public class ListCommand implements Command {
     private final MapStorage mapStorage;
     private static final String WITHOUT_SUBS = "You aren't subscribed to anything";
     private static final String USER_ERROR = "you aren't logged in, type /start";
-    private static final String WRONG_COMMAND = "The command was entered incorrectly! Type /list to view your subscriptions";
+    private static final String WRONG_COMMAND = "The command was entered incorrectly!" +
+        " Type /list to view your subscriptions";
 
     public ListCommand(MapStorage mapStorage) {
         this.mapStorage = mapStorage;
@@ -52,7 +53,7 @@ public class ListCommand implements Command {
 
 
 
-            } catch (Exception e){
+            } catch (Exception e) {
                 return new SendMessage(
                     update.message().chat().id(),
                     USER_ERROR
