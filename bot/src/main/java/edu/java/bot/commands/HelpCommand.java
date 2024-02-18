@@ -9,8 +9,8 @@ public class HelpCommand implements Command {
 
     private final List<Command> commandList;
 
-    private static final String WRONG_COMMAND = "The command was entered incorrectly!" +
-        " Type /help to view the available commands";
+    private static final String WRONG_COMMAND = "The command was entered incorrectly!"
+        + " Type /help to view the available commands";
 
     public HelpCommand(List<Command> commandList) {
         this.commandList = commandList;

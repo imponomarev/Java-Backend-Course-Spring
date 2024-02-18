@@ -1,11 +1,11 @@
 package edu.java.bot.dao;
 
+import com.pengrad.telegrambot.model.Update;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import com.pengrad.telegrambot.model.Update;
 import org.springframework.stereotype.Component;
 
 @Component
