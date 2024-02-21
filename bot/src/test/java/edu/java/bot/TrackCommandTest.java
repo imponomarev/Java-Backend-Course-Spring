@@ -6,23 +6,20 @@ import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.request.SendMessage;
 import edu.java.bot.commands.Command;
 import edu.java.bot.dao.MapStorage;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeAll;
+import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import java.net.URI;
 
 @SpringBootTest
-public class TrackCommandTest {
-    public static Update update;
-    public static Message message;
-    public static Chat chat;
+class TrackCommandTest {
 
     @Autowired
     public Command trackCommand;
-
 
     @Autowired
     MapStorage mapStorage;
@@ -32,28 +29,59 @@ public class TrackCommandTest {
         mapStorage.clear();
     }
 
-    @BeforeAll
-    static void initialize() {
-        update = Mockito.mock(Update.class);
-        message = Mockito.mock(Message.class);
-        chat = Mockito.mock(Chat.class);
+    @Mock
+    Update update;
+
+    @Mock
+    Message message;
+
+    @Mock
+    Chat chat;
+
+    @Test
+    void TrackCommandTestWithRightInput() {
+
+        Mockito.when(update.message()).thenReturn(message);
+        Mockito.when(message.text()).thenReturn("/track https://github.com/imponomarev");
+        Mockito.when(message.chat()).thenReturn(chat);
+        Mockito.when(chat.id()).thenReturn(11L);
+
+        mapStorage.registrate(update);
+
+        SendMessage sendMessage = trackCommand.handle(update);
+
+        Assertions.assertEquals(
+            "you have successfully subscribed to the resource",
+            sendMessage.getParameters().get("text")
+        );
+        Assertions.assertEquals(
+            11L,
+            sendMessage.getParameters().get("chat_id")
+        );
     }
-//    Та же ошибка, что и с командой help
-//    @Test
-//    public void TrackCommandTestWithRightInput() {
-//        Mockito.when(update.message()).thenReturn(message);
-//        Mockito.when(message.text()).thenReturn("/track https://github.com/imponomarev");
-//        Mockito.when(message.chat()).thenReturn(chat);
-//        Mockito.when(chat.id()).thenReturn(11L);
-//        mapStorage.registrate(update);
-//        SendMessage sendMessage = trackCommand.handle(update);
-//        Assertions.assertEquals(
-//            sendMessage.getParameters().get("text"),
-//            "you have successfully subscribed to the resource"
-//        );
-//        Assertions.assertEquals(
-//            sendMessage.getParameters().get("chat_id"),
-//            11L
-//        );
-//    }
+
+    @Test
+    void TrackCommandTestWithAlreadyTrackedLink() throws Exception {
+
+        Mockito.when(update.message()).thenReturn(message);
+        Mockito.when(message.text()).thenReturn("/track https://github.com/imponomarev");
+        Mockito.when(message.chat()).thenReturn(chat);
+        Mockito.when(chat.id()).thenReturn(11L);
+
+        var link = URI.create("https://github.com/imponomarev");
+
+        mapStorage.registrate(update);
+        mapStorage.addSubscription(update, link);
+
+        SendMessage sendMessage = trackCommand.handle(update);
+
+        Assertions.assertEquals(
+            "You have already subscribed to this resource",
+            sendMessage.getParameters().get("text")
+        );
+        Assertions.assertEquals(
+            11L,
+            sendMessage.getParameters().get("chat_id")
+        );
+    }
 }

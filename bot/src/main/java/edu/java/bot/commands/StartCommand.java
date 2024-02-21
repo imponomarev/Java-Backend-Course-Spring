@@ -2,20 +2,20 @@ package edu.java.bot.commands;
 
 import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.request.SendMessage;
-import edu.java.bot.dao.MapStorage;
+import edu.java.bot.dao.IStorage;
+import org.springframework.stereotype.Component;
 
-
+@Component
 public class StartCommand implements Command {
 
-    private final MapStorage mapStorage;
+    private final IStorage mapStorage;
     private static final String ALREADY_REGISTERED = "You are already registered";
     private static final String SUCCESSFULLY_REGISTERED = "You have successfully registered";
     private static final String WRONG_COMMAND = "Enter /start to register in the bot";
 
-    public StartCommand(MapStorage mapStorage) {
+    public StartCommand(IStorage mapStorage) {
         this.mapStorage = mapStorage;
     }
-
 
     @Override
     public String command() {

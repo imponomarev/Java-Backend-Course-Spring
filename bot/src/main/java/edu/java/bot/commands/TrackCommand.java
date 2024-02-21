@@ -2,16 +2,18 @@ package edu.java.bot.commands;
 
 import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.request.SendMessage;
-import edu.java.bot.dao.MapStorage;
+import edu.java.bot.dao.IStorage;
+import org.springframework.stereotype.Component;
 import java.net.URI;
 
+@Component
 public class TrackCommand implements Command {
-    private final MapStorage mapStorage;
+    private final IStorage mapStorage;
     private static final String SUCCESSFULLY_SUBSCRIBED = "you have successfully subscribed to the resource";
     private static final String ALREADY_SUBSCRIBED = "You have already subscribed to this resource";
     private static final String USER_ERROR = "you aren't logged in, type /start";
 
-    public TrackCommand(MapStorage mapStorage) {
+    public TrackCommand(IStorage mapStorage) {
         this.mapStorage = mapStorage;
     }
 

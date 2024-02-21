@@ -2,19 +2,20 @@ package edu.java.bot.commands;
 
 import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.request.SendMessage;
-import edu.java.bot.dao.MapStorage;
+import edu.java.bot.dao.IStorage;
+import org.springframework.stereotype.Component;
 import java.net.URI;
 
+@Component
 public class UntrackCommand implements Command {
-    private final MapStorage mapStorage;
+    private final IStorage mapStorage;
     private static final String SUCCESSFULLY_UNSUBSCRIBED = "you have successfully unsubscribed from the resource";
     private static final String DONT_SUBSCRIBED = "You don't subscribe to this resource";
     private static final String USER_ERROR = "you aren't logged in, type /start";
 
-    public UntrackCommand(MapStorage mapStorage) {
+    public UntrackCommand(IStorage mapStorage) {
         this.mapStorage = mapStorage;
     }
-
 
     @Override
     public String command() {
@@ -44,7 +45,7 @@ public class UntrackCommand implements Command {
             URI link = URI.create(uri);
 
             try {
-                if (!mapStorage.isSubExists(update, link)) {
+                if (mapStorage.isSubExists(update, link)) {
                     mapStorage.deleteSubscription(update, link);
                     return new SendMessage(
                         update.message().chat().id(),

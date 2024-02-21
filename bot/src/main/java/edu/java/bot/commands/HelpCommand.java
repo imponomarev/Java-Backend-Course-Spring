@@ -2,9 +2,11 @@ package edu.java.bot.commands;
 
 import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.request.SendMessage;
+import org.springframework.stereotype.Component;
 import java.util.List;
-import java.util.stream.Collectors;
 
+
+@Component
 public class HelpCommand implements Command {
 
     private final List<Command> commandList;
@@ -15,7 +17,6 @@ public class HelpCommand implements Command {
     public HelpCommand(List<Command> commandList) {
         this.commandList = commandList;
     }
-
 
     @Override
     public String command() {
@@ -32,10 +33,13 @@ public class HelpCommand implements Command {
         if (supports(update)) {
             StringBuilder answer = new StringBuilder("Available commands:\n");
 
-            answer.append(commandList.stream()
-                .map(
-                    c -> c.command() + " - " + c.description() + "\n"
-                ).collect(Collectors.joining()));
+            for (var command : commandList) {
+                answer.append(command.command())
+                    .append(" - ")
+                    .append(command.description())
+                    .append("\n");
+
+            }
 
             return new SendMessage(
                 update.message().chat().id(),

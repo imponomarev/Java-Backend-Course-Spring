@@ -2,22 +2,23 @@ package edu.java.bot.commands;
 
 import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.request.SendMessage;
-import edu.java.bot.dao.MapStorage;
+import edu.java.bot.dao.IStorage;
+import org.springframework.stereotype.Component;
 import java.net.URI;
 import java.util.List;
 
+@Component
 public class ListCommand implements Command {
 
-    private final MapStorage mapStorage;
+    private final IStorage mapStorage;
     private static final String WITHOUT_SUBS = "You aren't subscribed to anything";
     private static final String USER_ERROR = "you aren't logged in, type /start";
     private static final String WRONG_COMMAND = "The command was entered incorrectly!"
         + " Type /list to view your subscriptions";
 
-    public ListCommand(MapStorage mapStorage) {
+    public ListCommand(IStorage mapStorage) {
         this.mapStorage = mapStorage;
     }
-
 
     @Override
     public String command() {
@@ -50,8 +51,6 @@ public class ListCommand implements Command {
                     update.message().chat().id(),
                     strLinks.toString()
                 );
-
-
 
             } catch (Exception e) {
                 return new SendMessage(

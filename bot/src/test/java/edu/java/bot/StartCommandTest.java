@@ -8,20 +8,14 @@ import edu.java.bot.commands.Command;
 import edu.java.bot.dao.MapStorage;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-
 @SpringBootTest
 class StartCommandTest {
-
-    public static Update update;
-    public static Message message;
-    public static Chat chat;
-
 
     @Autowired
     Command startCommand;
@@ -34,12 +28,14 @@ class StartCommandTest {
         mapStorage.clear();
     }
 
-    @BeforeAll
-    static void init() {
-        update = Mockito.mock(Update.class);
-        message = Mockito.mock(Message.class);
-        chat = Mockito.mock(Chat.class);
-    }
+    @Mock
+    Update update;
+
+    @Mock
+    Message message;
+
+    @Mock
+    Chat chat;
 
     @Test
     void StartCommandTestWithRightInputAndRepeatedInput() {
@@ -47,28 +43,28 @@ class StartCommandTest {
         Mockito.when(message.text()).thenReturn("/start");
         Mockito.when(message.chat()).thenReturn(chat);
         Mockito.when(chat.id()).thenReturn(11L);
+
         SendMessage sendMessage1 = startCommand.handle(update);
         SendMessage sendMessage2 = startCommand.handle(update);
 
         Assertions.assertEquals(
-            sendMessage1.getParameters().get("text"),
-            "You have successfully registered"
+            "You have successfully registered",
+            sendMessage1.getParameters().get("text")
         );
         Assertions.assertEquals(
-            sendMessage1.getParameters().get("chat_id"),
-            11L
+            11L,
+            sendMessage1.getParameters().get("chat_id")
         );
 
         Assertions.assertEquals(
-            sendMessage2.getParameters().get("text"),
-            "You are already registered"
+            "You are already registered",
+            sendMessage2.getParameters().get("text")
         );
         Assertions.assertEquals(
-            sendMessage1.getParameters().get("chat_id"),
-            11L
+            11L,
+            sendMessage2.getParameters().get("chat_id")
         );
     }
-
 
     @Test
     void StartCommandTestWithWrongInput() {
@@ -76,17 +72,16 @@ class StartCommandTest {
         Mockito.when(message.text()).thenReturn("/star");
         Mockito.when(message.chat()).thenReturn(chat);
         Mockito.when(chat.id()).thenReturn(11L);
+
         SendMessage sendMessage1 = startCommand.handle(update);
 
         Assertions.assertEquals(
-            sendMessage1.getParameters().get("text"),
-            "Enter /start to register in the bot"
+            "Enter /start to register in the bot",
+            sendMessage1.getParameters().get("text")
         );
         Assertions.assertEquals(
-            sendMessage1.getParameters().get("chat_id"),
-            11L
+            11L,
+            sendMessage1.getParameters().get("chat_id")
         );
-
     }
-
 }
