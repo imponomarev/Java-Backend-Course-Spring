@@ -1,10 +1,10 @@
 package edu.java.bot.commands;
 
+import java.net.URI;
 import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.request.SendMessage;
 import edu.java.bot.dao.IStorage;
 import org.springframework.stereotype.Component;
-import java.net.URI;
 import java.util.List;
 
 @Component

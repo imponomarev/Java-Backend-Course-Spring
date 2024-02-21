@@ -1,11 +1,11 @@
 package edu.java.bot.processor;
 
-import edu.java.bot.commands.Command;
-import org.springframework.stereotype.Component;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.springframework.stereotype.Component;
+import edu.java.bot.commands.Command;
 
 @Component
 public class CommandHolder {

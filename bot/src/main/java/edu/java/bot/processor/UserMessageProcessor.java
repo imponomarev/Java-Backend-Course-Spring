@@ -12,6 +12,8 @@ public class UserMessageProcessor implements IUserMessageProcessor {
 
     private static final String WRONG_COMMAND = "Wrong command! Please try again.";
 
+    private static final String PATTERN = "\\s+";
+
     public UserMessageProcessor(CommandHolder commandHolder) {
         this.commandHolder = commandHolder;
     }
@@ -38,10 +40,10 @@ public class UserMessageProcessor implements IUserMessageProcessor {
     }
 
     private boolean isSingleWord(String text) {
-        return text.trim().split("\\s+").length == 1;
+        return text.trim().split(PATTERN).length == 1;
     }
 
     private String getFirstWord(String text) {
-        return text.trim().split("\\s+")[0];
+        return text.trim().split(PATTERN)[0];
     }
 }
