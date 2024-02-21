@@ -1,10 +1,10 @@
 package edu.java.bot.processor;
 
+import edu.java.bot.commands.Command;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import edu.java.bot.commands.Command;
 import org.springframework.stereotype.Component;
 
 @Component

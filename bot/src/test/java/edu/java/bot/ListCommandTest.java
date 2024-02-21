@@ -4,7 +4,7 @@ import com.pengrad.telegrambot.model.Chat;
 import com.pengrad.telegrambot.model.Message;
 import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.request.SendMessage;
-import edu.java.bot.commands.ListCommand;
+import edu.java.bot.commands.Command;
 import edu.java.bot.dao.MapStorage;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
@@ -23,7 +23,7 @@ class ListCommandTest {
     public static Chat chat;
 
     @Autowired
-    public ListCommand listCommand;
+    public Command listCommand;
 
     @Autowired
     MapStorage mapStorage;
