@@ -1,11 +1,10 @@
 package edu.java.bot.commands;
 
-import java.net.URI;
 import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.request.SendMessage;
 import edu.java.bot.dao.IStorage;
+import java.net.URI;
 import org.springframework.stereotype.Component;
-
 
 @Component
 public class UntrackCommand implements Command {
