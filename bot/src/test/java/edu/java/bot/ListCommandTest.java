@@ -8,8 +8,8 @@ import edu.java.bot.commands.Command;
 import edu.java.bot.dao.MapStorage;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -17,10 +17,6 @@ import java.net.URI;
 
 @SpringBootTest
 class ListCommandTest {
-
-    public static Update update;
-    public static Message message;
-    public static Chat chat;
 
     @Autowired
     public Command listCommand;
@@ -33,12 +29,14 @@ class ListCommandTest {
         mapStorage.clear();
     }
 
-    @BeforeAll
-    static void initialize() {
-        update = Mockito.mock(Update.class);
-        message = Mockito.mock(Message.class);
-        chat = Mockito.mock(Chat.class);
-    }
+    @Mock
+    Update update;
+
+    @Mock
+    Message message;
+
+    @Mock
+    Chat chat;
 
     @Test
     void ListCommandTestWithRightInput() throws Exception {
