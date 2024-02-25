@@ -10,8 +10,8 @@ class LinkUpdaterSchedulerTest {
     @Test
     void updateTest() {
         LinkUpdaterScheduler linkUpdaterScheduler = Mockito.mock(LinkUpdaterScheduler.class);
-        Mockito.doThrow(new Exception()).when(linkUpdaterScheduler).update();
+        Mockito.doThrow(new RuntimeException()).when(linkUpdaterScheduler).update();
 
-        Assertions.assertThrows(Exception.class, linkUpdaterScheduler::update);
+        Assertions.assertThrows(RuntimeException.class, linkUpdaterScheduler::update);
     }
 }

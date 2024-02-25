@@ -4,6 +4,6 @@ import reactor.core.publisher.Flux;
 
 public interface GithubClient {
 
-    public Flux<GithubResponse> fetchRepositoryInfo(String owner, String repoName);
+    Flux<GithubResponse> fetchRepositoryInfo(String owner, String repoName);
 
 }
