@@ -4,7 +4,7 @@ import com.fasterxml.jackson.core.JsonParseException;
 import com.github.tomakehurst.wiremock.WireMockServer;
 import com.github.tomakehurst.wiremock.client.WireMock;
 import edu.java.clientStackOverflow.StackOverflowClient;
-import edu.java.clientStackOverflow.StackOverflowClientImplementation;
+import edu.java.clientStackOverflow.StackOverflowWebClient;
 import edu.java.clientStackOverflow.StackOverflowResponse;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -31,7 +31,7 @@ class StackOverflowClientTest {
         wireMockServer = new WireMockServer();
         wireMockServer.start();
         WireMock.configureFor("localhost", wireMockServer.port());
-        stackOverflowClient = new StackOverflowClientImplementation("http://localhost:"
+        stackOverflowClient = new StackOverflowWebClient("http://localhost:"
             + wireMockServer.port());
     }
 

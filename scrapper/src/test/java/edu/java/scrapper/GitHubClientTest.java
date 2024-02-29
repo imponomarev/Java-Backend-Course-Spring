@@ -2,7 +2,7 @@ package edu.java.scrapper;
 
 import com.github.tomakehurst.wiremock.WireMockServer;
 import com.github.tomakehurst.wiremock.client.WireMock;
-import edu.java.clientGithub.GitHubClientImplementation;
+import edu.java.clientGithub.GitHubWebClient;
 import edu.java.clientGithub.GithubClient;
 import edu.java.clientGithub.GithubResponse;
 import org.junit.jupiter.api.AfterEach;
@@ -29,7 +29,7 @@ class GitHubClientTest {
        wireMockServer = new WireMockServer();
        wireMockServer.start();
        WireMock.configureFor("localhost", wireMockServer.port());
-       githubClient = new GitHubClientImplementation("http://localhost:"
+       githubClient = new GitHubWebClient("http://localhost:"
        + wireMockServer.port());
    }
 

@@ -4,29 +4,26 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import java.io.IOException;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+public class StackOverflowWebClient implements StackOverflowClient {
 
-public class StackOverflowClientImplementation implements StackOverflowClient {
-
-    @Value(value = "${api.stackoverflow.defaultUrl}")
-    private String defaultUrl;
+    private static final String DEFAULT_URL = "https://api.stackexchange.com/2.3";
 
     private final WebClient webClient;
 
-    public StackOverflowClientImplementation() {
+    public StackOverflowWebClient() {
         webClient = WebClient.builder()
-            .baseUrl(defaultUrl)
+            .baseUrl(DEFAULT_URL)
             .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
             .build();
     }
 
-    public StackOverflowClientImplementation(String baseUrl) {
+    public StackOverflowWebClient(String baseUrl) {
         webClient = WebClient.builder()
             .baseUrl(baseUrl)
             .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)

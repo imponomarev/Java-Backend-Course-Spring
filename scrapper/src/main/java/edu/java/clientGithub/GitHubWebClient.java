@@ -1,26 +1,24 @@
 package edu.java.clientGithub;
 
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
 
-public class GitHubClientImplementation implements GithubClient {
+public class GitHubWebClient implements GithubClient {
 
-    @Value(value = "${api.github.defaultUrl}")
-    private String defaultUrl;
 
+    private static final String DEFAULT_URL = "https://api.github.com";
     private final WebClient webClient;
 
-    public GitHubClientImplementation() {
+    public GitHubWebClient() {
         webClient = WebClient.builder()
-            .baseUrl(defaultUrl)
+            .baseUrl(DEFAULT_URL)
             .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
             .build();
     }
 
-    public GitHubClientImplementation(String baseUrl) {
+    public GitHubWebClient(String baseUrl) {
         webClient = WebClient.builder()
             .baseUrl(baseUrl)
             .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
