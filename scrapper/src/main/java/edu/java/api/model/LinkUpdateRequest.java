@@ -1,8 +1,8 @@
 package edu.java.api.model;
 
-import org.jetbrains.annotations.NotNull;
 import java.net.URI;
 import java.util.List;
+import org.jetbrains.annotations.NotNull;
 
 public record LinkUpdateRequest(
     @NotNull Long id,

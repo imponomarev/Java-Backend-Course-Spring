@@ -3,12 +3,12 @@ package edu.java.service;
 import edu.java.api.model.LinkResponse;
 import edu.java.exceptions.BadRequestException;
 import edu.java.exceptions.NotFoundException;
-import org.springframework.stereotype.Service;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import org.springframework.stereotype.Service;
 
 @Service
 public class ScrapperService {
@@ -37,7 +37,8 @@ public class ScrapperService {
         List<LinkResponse> responses = chatLinks.get(id);
         for (var linkResponse : responses) {
             if (linkResponse.url().getPath().equals(link.getPath())) {
-                throw new BadRequestException("the link is already being tracked", "you cannot add an already tracked link");
+                throw new BadRequestException("the link is already being tracked",
+                    "you cannot add an already tracked link");
             }
         }
 
