@@ -10,6 +10,7 @@ import edu.java.service.ScrapperService;
 import jakarta.validation.Valid;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -25,19 +26,19 @@ public class ScrapperController {
     private final ScrapperService scrapperService;
 
     @PostMapping("/tg-chat/{id}")
-    public String registerChat(@PathVariable("id") Long id) throws BadRequestException {
+    public String registerChat(@PathVariable("id") Long id) {
         scrapperService.registerChat(id);
         return "chat is registered";
     }
 
     @DeleteMapping("/tg-chat/{id}")
-    public String deleteChat(@PathVariable("id") Long id) throws NotFoundException {
+    public String deleteChat(@PathVariable("id") Long id) {
         scrapperService.deleteChat(id);
         return "chat was successfully deleted";
     }
 
     @GetMapping("/links")
-    public ListLinksResponse getLinks(@RequestHeader("Tg-Chat-Id") Long id) throws NotFoundException {
+    public ListLinksResponse getLinks(@RequestHeader("Tg-Chat-Id") Long id) {
         List<LinkResponse> links = scrapperService.getLinks(id);
         return new ListLinksResponse(links, links.size());
     }
@@ -53,7 +54,7 @@ public class ScrapperController {
     @DeleteMapping("/links")
     public LinkResponse removeLink(
         @RequestHeader("Tg-Chat-Id") Long id,
-        @RequestBody @Valid RemoveLinkRequest request
+        @RequestBody @Valid @NotNull RemoveLinkRequest request
     ) throws NotFoundException {
         return scrapperService.removeLink(id, request.link());
     }

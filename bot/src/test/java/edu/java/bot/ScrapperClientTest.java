@@ -136,7 +136,7 @@ class ScrapperClientTest {
                 .withBody(responseBody)));
 
         Mono<LinkResponse> response = scrapperClient.addLink(
-            100L, new AddLinkRequest(new URI("test-url"))
+            100L, "test-url"
         );
 
 

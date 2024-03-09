@@ -14,24 +14,24 @@ import org.springframework.stereotype.Service;
 public class ScrapperService {
     private final Map<Long, List<LinkResponse>> chatLinks = new ConcurrentHashMap<>();
 
-    public void registerChat(Long id) throws BadRequestException {
+    public void registerChat(Long id) {
         if (chatLinks.containsKey(id)) {
             throw new BadRequestException("The chat is already registered", "You cannot re-register a chat");
         }
         chatLinks.put(id, new ArrayList<>());
     }
 
-    public void deleteChat(Long id) throws NotFoundException {
+    public void deleteChat(Long id) {
         notFoundCheck(id, "you cannot delete a non-existent chat");
         chatLinks.remove(id);
     }
 
-    public List<LinkResponse> getLinks(Long id) throws NotFoundException {
+    public List<LinkResponse> getLinks(Long id) {
         notFoundCheck(id, "you can't get links for a non-existent chat");
         return chatLinks.get(id);
     }
 
-    public LinkResponse addLink(Long id, URI link) throws BadRequestException, NotFoundException {
+    public LinkResponse addLink(Long id, URI link) {
         notFoundCheck(id,  "you cannot add a link for a non-existent chat");
 
         List<LinkResponse> responses = chatLinks.get(id);
@@ -48,7 +48,7 @@ public class ScrapperService {
         return linkResponse;
     }
 
-    public LinkResponse removeLink(Long id, URI link) throws NotFoundException {
+    public LinkResponse removeLink(Long id, URI link) {
         notFoundCheck(id, "you cannot remove a link from a non-existent chat");
 
         List<LinkResponse> responses = chatLinks.get(id);
@@ -61,7 +61,7 @@ public class ScrapperService {
         throw new NotFoundException("the link doesn't exist", "you cannot delete a link that doesn't exist");
     }
 
-    private void notFoundCheck(Long id, String message) throws NotFoundException {
+    private void notFoundCheck(Long id, String message) {
         if (!chatLinks.containsKey(id)) {
             throw new NotFoundException("The chat wasn't registered", message);
         }

@@ -10,6 +10,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
+import java.net.URI;
 
 public class ScrapperClient {
 
@@ -63,7 +64,9 @@ public class ScrapperClient {
             .bodyToMono(ListLinksResponse.class);
     }
 
-    public Mono<LinkResponse> addLink(Long id, AddLinkRequest request) {
+    public Mono<LinkResponse> addLink(Long id, String link) {
+        URI url = URI.create(link);
+        AddLinkRequest request = new AddLinkRequest(url);
         return webClient
             .post()
             .uri(LINKS)

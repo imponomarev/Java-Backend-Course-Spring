@@ -5,17 +5,17 @@ import edu.java.exceptions.BadRequestException;
 import edu.java.exceptions.NotFoundException;
 import java.util.Arrays;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+@RestControllerAdvice
+public class ApiExceptionController {
 
-@org.springframework.web.bind.annotation.RestControllerAdvice
-public class RestControllerAdvice {
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(BadRequestException.class)
-    public ResponseEntity<ApiErrorResponse> handleBadRequestException(BadRequestException e) {
-        return ResponseEntity
-            .status(HttpStatus.BAD_REQUEST)
-            .body(new ApiErrorResponse(
+    public ApiErrorResponse handleBadRequestException(BadRequestException e) {
+            return new ApiErrorResponse(
                 e.getDescription(),
                 HttpStatus.BAD_REQUEST.getReasonPhrase(),
                 e.getClass().getSimpleName(),
@@ -23,14 +23,13 @@ public class RestControllerAdvice {
                 Arrays.stream(e.getStackTrace())
                     .map(StackTraceElement::toString)
                     .toList()
-            ));
+            );
     }
 
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(NotFoundException.class)
-    public ResponseEntity<ApiErrorResponse> handleNotFoundException(NotFoundException e) {
-        return ResponseEntity
-            .status(HttpStatus.BAD_REQUEST)
-            .body(new ApiErrorResponse(
+    public ApiErrorResponse handleNotFoundException(NotFoundException e) {
+        return new ApiErrorResponse(
                 e.getDescription(),
                 HttpStatus.BAD_REQUEST.getReasonPhrase(),
                 e.getClass().getSimpleName(),
@@ -38,6 +37,6 @@ public class RestControllerAdvice {
                 Arrays.stream(e.getStackTrace())
                     .map(StackTraceElement::toString)
                     .toList()
-            ));
+            );
     }
 }

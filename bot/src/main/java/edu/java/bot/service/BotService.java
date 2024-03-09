@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 public class BotService {
     private final Set<LinkUpdateRequest> updates = new HashSet<>();
 
-    public void add(LinkUpdateRequest linkUpdateRequest) throws UpdateAlreadyExistsException {
+    public void add(LinkUpdateRequest linkUpdateRequest) {
         if (!updates.add(linkUpdateRequest)) {
             throw new UpdateAlreadyExistsException("The update already exists");
         }
