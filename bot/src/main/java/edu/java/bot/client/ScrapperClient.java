@@ -6,11 +6,12 @@ import edu.java.bot.api.model.LinkResponse;
 import edu.java.bot.api.model.ListLinksResponse;
 import edu.java.bot.api.model.RemoveLinkRequest;
 import edu.java.bot.exceptions.ApiErrorException;
+import java.net.URI;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
-import java.net.URI;
+
 
 public class ScrapperClient {
 
