@@ -59,5 +59,4 @@ public class ScrapperController {
         return scrapperService.removeLink(id, request.link());
     }
 
-
 }
