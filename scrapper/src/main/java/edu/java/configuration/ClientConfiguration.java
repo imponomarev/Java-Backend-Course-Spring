@@ -1,5 +1,6 @@
 package edu.java.configuration;
 
+import edu.java.api.client.BotClient;
 import edu.java.clientGithub.GitHubWebClient;
 import edu.java.clientGithub.GithubClient;
 import edu.java.clientStackOverflow.StackOverflowClient;
@@ -17,6 +18,9 @@ public class ClientConfiguration {
     @Value("${api.stackoverflow.baseUrl}")
     private String stackOverflowBaseUrl;
 
+    @Value("${api.bot.baseUrl}")
+    private String botBaseUrl;
+
     @Bean
     GithubClient githubClient() {
         return new GitHubWebClient(githubBaseUrl);
@@ -27,4 +31,8 @@ public class ClientConfiguration {
         return new StackOverflowWebClient(stackOverflowBaseUrl);
     }
 
+    @Bean
+    BotClient botClient() {
+        return new BotClient(botBaseUrl);
+    }
 }
