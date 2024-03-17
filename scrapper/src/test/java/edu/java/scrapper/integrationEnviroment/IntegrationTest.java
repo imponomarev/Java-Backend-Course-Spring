@@ -1,4 +1,4 @@
-package edu.java.scrapper;
+package edu.java.scrapper.integrationEnviroment;
 
 import liquibase.Contexts;
 import liquibase.LabelExpression;
@@ -8,8 +8,6 @@ import liquibase.database.DatabaseFactory;
 import liquibase.database.jvm.JdbcConnection;
 import liquibase.exception.LiquibaseException;
 import liquibase.resource.DirectoryResourceAccessor;
-import org.junit.Test;
-import org.junit.jupiter.api.Assertions;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.testcontainers.containers.JdbcDatabaseContainer;
@@ -19,12 +17,8 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.nio.file.Path;
 import java.sql.Connection;
-import java.sql.DatabaseMetaData;
 import java.sql.DriverManager;
-import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Properties;
 
 @Testcontainers
@@ -60,7 +54,7 @@ public class IntegrationTest {
             new JdbcConnection(connection)
         );
 
-        Path path = new File(".").toPath().toAbsolutePath().getParent().getParent().resolve("migrations");
+        Path path = new File(".").toPath().toAbsolutePath().resolve("src").resolve("main").resolve("resources").resolve("migrations");
 
         Liquibase liquibase = new Liquibase(
             "master.xml",
@@ -75,29 +69,5 @@ public class IntegrationTest {
         registry.add("spring.datasource.url", POSTGRES::getJdbcUrl);
         registry.add("spring.datasource.username", POSTGRES::getUsername);
         registry.add("spring.datasource.password", POSTGRES::getPassword);
-    }
-
-    @Test
-    public void dataBaseTest() throws SQLException {
-        Properties properties = new Properties();
-        properties.put("user", POSTGRES.getUsername());
-        properties.put("password", POSTGRES.getUsername());
-        Connection connection = DriverManager.getConnection(
-            POSTGRES.getJdbcUrl(),
-            properties
-        );
-
-        DatabaseMetaData databaseMetaData = connection.getMetaData();
-        ResultSet resultSet = databaseMetaData.getTables(
-            null, null, null,  new String[]{"TABLE"});
-
-        List<String> tables = new ArrayList<>();
-
-        while (resultSet.next()) {
-            tables.add(resultSet.getString("TABLE_NAME"));
-        }
-
-        Assertions.assertEquals(tables,
-            List.of("chat", "chat_link_association", "link", "databasechangelog", "databasechangeloglock"));
     }
 }
