@@ -6,6 +6,7 @@ import edu.java.api.model.ListLinksResponse;
 import edu.java.api.model.RemoveLinkRequest;
 import edu.java.domain.dto.LinkDto;
 import edu.java.services.LinkService;
+import java.util.List;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -16,7 +17,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RestController;
-import java.util.List;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -43,7 +43,7 @@ public class LinkController {
         @RequestHeader("Tg-Chat-Id") Long id,
         @RequestBody @Valid AddLinkRequest request
     ) {
-        linkService.addLink(id,request.link());
+        linkService.addLink(id, request.link());
         log.info("link has been added");
         return new LinkResponse(id, request.link());
     }

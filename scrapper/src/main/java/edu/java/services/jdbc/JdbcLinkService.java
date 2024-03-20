@@ -5,7 +5,6 @@ import edu.java.domain.dto.LinkDto;
 import edu.java.domain.repositories.ChatLinkRepository;
 import edu.java.domain.repositories.ChatRepository;
 import edu.java.domain.repositories.LinkRepository;
-
 import edu.java.exceptions.BadRequestException;
 import edu.java.exceptions.NotFoundException;
 import edu.java.services.LinkService;
@@ -38,8 +37,10 @@ public class JdbcLinkService implements LinkService {
         }
         Long lindId = linkRepository.getLinkId(url);
         if (chatLinkRepository.find(chatId, lindId).isPresent()) {
-            throw new BadRequestException("the link is already being tracked",
-                "you cannot add an already tracked link");
+            throw new BadRequestException(
+                "the link is already being tracked",
+                "you cannot add an already tracked link"
+            );
         }
         chatLinkRepository.add(chatId, lindId);
 
@@ -99,8 +100,8 @@ public class JdbcLinkService implements LinkService {
     public List<LinkDto> getOldLinks(Long threshold) {
         return linkRepository.findAll().stream()
             .filter(link -> {
-                OffsetDateTime current_time = OffsetDateTime.now();
-                Long timeWithoutUpdate = ChronoUnit.SECONDS.between(link.lastCheck(), current_time);
+                OffsetDateTime currentTime = OffsetDateTime.now();
+                Long timeWithoutUpdate = ChronoUnit.SECONDS.between(link.lastCheck(), currentTime);
                 return timeWithoutUpdate >= threshold;
             }).toList();
     }

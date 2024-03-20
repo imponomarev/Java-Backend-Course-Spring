@@ -1,11 +1,11 @@
 package edu.java.domain.repositories;
 
 import edu.java.domain.dto.ChatLinkDto;
+import java.util.List;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.simple.JdbcClient;
 import org.springframework.stereotype.Repository;
-import java.util.List;
-import java.util.Optional;
 
 @Repository
 @RequiredArgsConstructor

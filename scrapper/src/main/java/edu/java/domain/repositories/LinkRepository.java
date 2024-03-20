@@ -1,12 +1,12 @@
 package edu.java.domain.repositories;
 
 import edu.java.domain.dto.LinkDto;
-import lombok.RequiredArgsConstructor;
-import org.springframework.jdbc.core.simple.JdbcClient;
-import org.springframework.stereotype.Repository;
 import java.net.URI;
 import java.util.List;
 import java.util.Optional;
+import lombok.RequiredArgsConstructor;
+import org.springframework.jdbc.core.simple.JdbcClient;
+import org.springframework.stereotype.Repository;
 
 @Repository
 @RequiredArgsConstructor
@@ -56,7 +56,6 @@ public class LinkRepository {
             .query(LinkDto.class)
             .list();
     }
-
 
     public Long getLinkId(URI url) {
         String query = "SELECT id FROM db.link WHERE url = ?";

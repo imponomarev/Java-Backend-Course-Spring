@@ -1,14 +1,14 @@
 package edu.java.updaters;
 
-
 import edu.java.clientStackOverflow.StackOverflowClient;
 import edu.java.clientStackOverflow.StackOverflowResponse;
 import edu.java.domain.dto.LinkDto;
 import edu.java.services.LinkService;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Component;
 import java.net.URI;
 import java.time.OffsetDateTime;
+import io.swagger.v3.oas.models.links.Link;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
@@ -19,7 +19,9 @@ public class StackOverflowUpdater implements LinkUpdater {
     private static final String HOST = "stackoverflow.com";
 
     @Override
-    public boolean update(LinkDto link) {
+    public boolean update(LinkDto linkDto) {
+
+        LinkDto link = linkDto;
 
         long questionId = Long.parseLong(link.url().getPath().split("/")[2]);
 

@@ -7,11 +7,10 @@ import edu.java.domain.repositories.LinkRepository;
 import edu.java.exceptions.BadRequestException;
 import edu.java.exceptions.NotFoundException;
 import edu.java.services.ChatService;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import java.util.List;
-
 
 @Service
 @RequiredArgsConstructor
