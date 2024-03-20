@@ -13,7 +13,7 @@
     <changeSet id="0001_create_chat_table" author="Ponomarev Ivan">
         <sqlFile path="migration_scripts/0001_create_chat_table.sql"/>
     </changeSet>
-    <changeSet id="0002_create_link_table" author="Ponomarev Ivan">
+    <changeSet id="0002_create_link_table_update_1" author="Ponomarev Ivan">
         <sqlFile path="migration_scripts/0002_create_link_table.sql"/>
     </changeSet>
     <changeSet id="0003_create_chat_link_association" author="Ponomarev Ivan">

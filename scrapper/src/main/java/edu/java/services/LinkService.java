@@ -14,4 +14,8 @@ public interface LinkService {
 
     void update(LinkDto linkDto);
 
+    List<LinkDto> getOldLinks(Long threshold);
+
+    List<Long> getChatIdsOfLink(Long linkId);
+
 }

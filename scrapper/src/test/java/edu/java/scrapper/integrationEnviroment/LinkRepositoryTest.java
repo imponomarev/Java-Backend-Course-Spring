@@ -24,7 +24,7 @@ class LinkRepositoryTest extends IntegrationTest {
     @Rollback
     void addLinkTest() {
         URI url = URI.create("https://github.com/imponomarev");
-        LinkDto link = new LinkDto(null, url, null);
+        LinkDto link = new LinkDto(null, url, null, null);
         linkRepository.addLink(link);
 
         Assertions.assertTrue(linkRepository.findLinkByUrl(url).isPresent());
@@ -35,7 +35,7 @@ class LinkRepositoryTest extends IntegrationTest {
     @Rollback
     void removeLinkTest() {
         URI url = URI.create("https://github.com/imponomarev");
-        LinkDto link = new LinkDto(null, url, null);
+        LinkDto link = new LinkDto(null, url, null, null);
         linkRepository.addLink(link);
         Assertions.assertTrue(linkRepository.findLinkByUrl(url).isPresent());
         linkRepository.remove(url);
@@ -48,8 +48,8 @@ class LinkRepositoryTest extends IntegrationTest {
     void findAllLinksTest() {
         URI url1 = URI.create("https://github.com/imponomarev");
         URI url2 = URI.create("https://github.com/imponomarev2");
-        LinkDto link1 = new LinkDto(null, url1, null);
-        LinkDto link2 = new LinkDto(null, url2, null);
+        LinkDto link1 = new LinkDto(null, url1, null, null);
+        LinkDto link2 = new LinkDto(null, url2, null, null);
         linkRepository.addLink(link1);
         linkRepository.addLink(link2);
         List<LinkDto> linkDtoList = linkRepository.findAll();

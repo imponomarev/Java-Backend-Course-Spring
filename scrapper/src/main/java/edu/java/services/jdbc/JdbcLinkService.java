@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.net.URI;
 import java.time.OffsetDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -33,7 +34,7 @@ public class JdbcLinkService implements LinkService {
         notFoundCheck(chatId, "you cannot add a link for a non-existent chat");
 
         if (linkRepository.findLinkByUrl(url).isEmpty()) {
-            linkRepository.addLink(new LinkDto(null, url, null));
+            linkRepository.addLink(new LinkDto(null, url, null, OffsetDateTime.now()));
         }
         Long lindId = linkRepository.getLinkId(url);
         if (chatLinkRepository.find(chatId, lindId).isPresent()) {
@@ -42,7 +43,7 @@ public class JdbcLinkService implements LinkService {
         }
         chatLinkRepository.add(chatId, lindId);
 
-        return new LinkDto(lindId, url, null);
+        return new LinkDto(lindId, url, null, OffsetDateTime.now());
     }
 
     @Override
@@ -60,10 +61,11 @@ public class JdbcLinkService implements LinkService {
         Long linkId = existingLink.get().id();
 
         OffsetDateTime lastUpdate = existingLink.get().lastUpdate();
+        OffsetDateTime lastCheck = existingLink.get().lastCheck();
 
         linkRepository.remove(url);
 
-        return new LinkDto(linkId, url, lastUpdate);
+        return new LinkDto(linkId, url, lastUpdate, lastCheck);
     }
 
     @Override
@@ -90,6 +92,26 @@ public class JdbcLinkService implements LinkService {
     @Transactional
     public void update(LinkDto link) {
         linkRepository.update(link);
+    }
+
+    @Override
+    @Transactional
+    public List<LinkDto> getOldLinks(Long threshold) {
+        return linkRepository.findAll().stream()
+            .filter(link -> {
+                OffsetDateTime current_time = OffsetDateTime.now();
+                Long timeWithoutUpdate = ChronoUnit.SECONDS.between(link.lastCheck(), current_time);
+                return timeWithoutUpdate >= threshold;
+            }).toList();
+    }
+
+    @Override
+    @Transactional
+    public List<Long> getChatIdsOfLink(Long linkId) {
+        return chatLinkRepository.findAll().stream()
+            .filter(chatLinkDto -> chatLinkDto.linkId().equals(linkId))
+            .map(ChatLinkDto::chatId)
+            .toList();
     }
 
     private void notFoundCheck(Long id, String message) {

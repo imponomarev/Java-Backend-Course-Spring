@@ -32,9 +32,9 @@ public class LinkRepository {
 
     public Long addLink(LinkDto link) {
         if (findLinkByUrl(link.url()).isEmpty()) {
-            String query = "INSERT INTO db.link(url, last_update) VALUES(?,?) RETURNING id";
+            String query = "INSERT INTO db.link(url, last_update, last_check) VALUES(?,?,?) RETURNING id";
             return jdbcClient.sql(query)
-                .params(link.url().toString(), link.lastUpdate())
+                .params(link.url().toString(), link.lastUpdate(), link.lastCheck())
                 .query(Long.class)
                 .single();
         }
@@ -75,11 +75,9 @@ public class LinkRepository {
     }
 
     public void update(LinkDto link) {
-        String query = "UPDATE db.link SET last_update = ? WHERE id = ?";
+        String query = "UPDATE db.link SET last_update = ? AND last_check = ? WHERE id = ?";
         jdbcClient.sql(query)
-            .params(link.lastUpdate(), link.id())
+            .params(link.lastUpdate(), link.lastCheck(), link.id())
             .update();
     }
-
-
 }

@@ -34,7 +34,7 @@ class ChatLinkRepositoryTest extends IntegrationTest {
         chatRepository.addChat(chatId);
 
         URI url = URI.create("https://github.com/imponomarev");
-        LinkDto link = new LinkDto(null, url, null);
+        LinkDto link = new LinkDto(null, url, null, null);
 
         linkRepository.addLink(link);
         Long linkId = linkRepository.getLinkId(url);
@@ -51,7 +51,7 @@ class ChatLinkRepositoryTest extends IntegrationTest {
         chatRepository.addChat(chatId);
 
         URI url = URI.create("https://github.com/imponomarev");
-        LinkDto link = new LinkDto(null, url, null);
+        LinkDto link = new LinkDto(null, url, null, null);
 
         linkRepository.addLink(link);
         Long linkId = linkRepository.getLinkId(url);
@@ -71,7 +71,7 @@ class ChatLinkRepositoryTest extends IntegrationTest {
         chatRepository.addChat(chatId1);
 
         URI url1 = URI.create("https://github.com/imponomarev");
-        LinkDto link1 = new LinkDto(null, url1, null);
+        LinkDto link1 = new LinkDto(null, url1, null, null);
 
         linkRepository.addLink(link1);
         Long linkId1 = linkRepository.getLinkId(url1);
@@ -80,7 +80,7 @@ class ChatLinkRepositoryTest extends IntegrationTest {
         chatRepository.addChat(chatId2);
 
         URI url2 = URI.create("https://github.com/imponomarev1");
-        LinkDto link2 = new LinkDto(null, url2, null);
+        LinkDto link2 = new LinkDto(null, url2, null, null);
 
         linkRepository.addLink(link2);
         Long linkId2 = linkRepository.getLinkId(url2);
