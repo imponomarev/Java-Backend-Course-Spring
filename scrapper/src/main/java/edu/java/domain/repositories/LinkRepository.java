@@ -79,4 +79,12 @@ public class LinkRepository {
             .params(link.lastUpdate(), link.lastCheck(), link.id())
             .update();
     }
+
+    public List<LinkDto> findOldLinksByThreshold(Long threshold) {
+        String query = "SELECT * FROM db.link WHERE last_check <= NOW() - INTERVAL ? SECOND";
+        return jdbcClient.sql(query)
+            .param(threshold)
+            .query(LinkDto.class)
+            .list();
+    }
 }

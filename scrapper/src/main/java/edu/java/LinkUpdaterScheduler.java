@@ -30,7 +30,10 @@ public class LinkUpdaterScheduler {
     public void update() {
         List<LinkDto> oldLinks = linkService.getOldLinks(threshold);
 
-        log.info("links that haven't been updated for a long time" + oldLinks.toString());
+        log.info("links that haven't been updated for a long time" + oldLinks.stream()
+            .map(LinkDto::id)
+            .toList());
+
         for (var link : oldLinks) {
             LinkUpdater linkUpdater = linkUpdatersList.stream()
                 .filter(updater -> updater.support(link.url()))

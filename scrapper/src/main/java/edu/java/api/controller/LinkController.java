@@ -53,8 +53,7 @@ public class LinkController {
         @RequestHeader("Tg-Chat-Id") Long id,
         @RequestBody @Valid @NotNull RemoveLinkRequest request
     ) {
-        linkService.removeLink(id, request.link());
         log.info("link has been removed");
-        return new LinkResponse(id, request.link());
+        return linkService.removeLink(id, request.link());
     }
 }

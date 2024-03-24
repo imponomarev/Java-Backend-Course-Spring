@@ -34,6 +34,22 @@ public class ChatLinkRepository {
             .list();
     }
 
+    public List<ChatLinkDto> findAllByChatId(Long chatId) {
+        String query = "SELECT * FROM db.chat_link_association WHERE chat_id = ?";
+        return jdbcClient.sql(query)
+            .params(chatId)
+            .query(ChatLinkDto.class)
+            .list();
+    }
+
+    public List<ChatLinkDto> findAllByLinkId(Long linkId) {
+        String query = "SELECT * FROM db.chat_link_association WHERE link_id = ?";
+        return jdbcClient.sql(query)
+            .params(linkId)
+            .query(ChatLinkDto.class)
+            .list();
+    }
+
     public Optional<ChatLinkDto> find(Long chatId, Long linkId) {
         String query = "SELECT * FROM db.chat_link_association WHERE chat_id = ? AND link_id = ?";
         return jdbcClient.sql(query)

@@ -23,9 +23,9 @@ public class JdbcChatService implements ChatService {
     @Override
     @Transactional
     public void registerChat(Long id) {
-        if (chatRepository.findChatById(id).isPresent()) {
+        chatRepository.findChatById(id).ifPresent(chat -> {
             throw new BadRequestException("The chat is already registered", "You cannot re-register a chat");
-        }
+        });
         chatRepository.addChat(id);
     }
 
@@ -34,9 +34,7 @@ public class JdbcChatService implements ChatService {
     public void deleteChat(Long id) {
         notFoundCheck(id, "you cannot delete a non-existent chat");
 
-        List<ChatLinkDto> chatLinkDtoList = chatLinkRepository.findAll().stream()
-            .filter(chatLinkDto -> chatLinkDto.chatId().equals(id))
-            .toList();
+        List<ChatLinkDto> chatLinkDtoList = chatLinkRepository.findAllByChatId(id);
 
         chatLinkDtoList.forEach(chatLinkDto -> {
             Long linkId = chatLinkDto.linkId();
@@ -47,7 +45,7 @@ public class JdbcChatService implements ChatService {
     }
 
     private void notFoundCheck(Long id, String message) {
-        if (chatRepository.findChatById(id).isEmpty()) {
+        if (chatRepository.exists(id)) {
             throw new NotFoundException("The chat wasn't registered", message);
         }
     }

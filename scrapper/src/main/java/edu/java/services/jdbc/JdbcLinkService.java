@@ -1,5 +1,6 @@
 package edu.java.services.jdbc;
 
+import edu.java.api.model.LinkResponse;
 import edu.java.domain.dto.ChatLinkDto;
 import edu.java.domain.dto.LinkDto;
 import edu.java.domain.repositories.ChatLinkRepository;
@@ -10,7 +11,6 @@ import edu.java.exceptions.NotFoundException;
 import edu.java.services.LinkService;
 import java.net.URI;
 import java.time.OffsetDateTime;
-import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -49,7 +49,7 @@ public class JdbcLinkService implements LinkService {
 
     @Override
     @Transactional
-    public LinkDto removeLink(Long chatId, URI url) {
+    public LinkResponse removeLink(Long chatId, URI url) {
 
         notFoundCheck(chatId, "you cannot remove a link from a non-existent chat");
 
@@ -61,12 +61,13 @@ public class JdbcLinkService implements LinkService {
 
         Long linkId = existingLink.get().id();
 
-        OffsetDateTime lastUpdate = existingLink.get().lastUpdate();
-        OffsetDateTime lastCheck = existingLink.get().lastCheck();
+        chatLinkRepository.remove(chatId, linkId);
 
-        linkRepository.remove(url);
+        if (chatLinkRepository.findAllByLinkId(linkId).isEmpty()) {
+            linkRepository.remove(url);
+        }
 
-        return new LinkDto(linkId, url, lastUpdate, lastCheck);
+        return new LinkResponse(linkId, url);
     }
 
     @Override
@@ -75,9 +76,7 @@ public class JdbcLinkService implements LinkService {
 
         notFoundCheck(chatId, "you can't get links for a non-existent chat");
 
-        List<ChatLinkDto> chatLinkDtoList = chatLinkRepository.findAll().stream()
-            .filter(chatLinkDto -> chatLinkDto.chatId().equals(chatId))
-            .toList();
+        List<ChatLinkDto> chatLinkDtoList = chatLinkRepository.findAllByChatId(chatId);
 
         return chatLinkDtoList.stream()
             .map(chatLinkDto -> {
@@ -98,12 +97,7 @@ public class JdbcLinkService implements LinkService {
     @Override
     @Transactional
     public List<LinkDto> getOldLinks(Long threshold) {
-        return linkRepository.findAll().stream()
-            .filter(link -> {
-                OffsetDateTime currentTime = OffsetDateTime.now();
-                Long timeWithoutUpdate = ChronoUnit.SECONDS.between(link.lastCheck(), currentTime);
-                return timeWithoutUpdate >= threshold;
-            }).toList();
+        return linkRepository.findOldLinksByThreshold(threshold);
     }
 
     @Override
@@ -116,7 +110,7 @@ public class JdbcLinkService implements LinkService {
     }
 
     private void notFoundCheck(Long id, String message) {
-        if (chatRepository.findChatById(id).isEmpty()) {
+        if (chatRepository.exists(id)) {
             throw new NotFoundException("The chat wasn't registered", message);
         }
     }

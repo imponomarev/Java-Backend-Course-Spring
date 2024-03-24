@@ -41,4 +41,14 @@ public class ChatRepository {
             .query(ChatDto.class)
             .optional();
     }
+
+    public boolean exists(Long chatId) {
+        String query = "SELECT COUNT(*) FROM db.chat WHERE id = ?";
+        Integer count = jdbcClient.sql(query)
+            .params(chatId)
+            .query(Integer.class)
+            .optional()
+            .orElse(null);
+        return count != null && count > 0;
+    }
 }
