@@ -15,7 +15,7 @@ public class GithubLinkUpdater implements LinkUpdater {
 
     private final GithubClient gitHubWebClient;
     private final LinkService linkService;
-    private static String HOST = "github.com";
+    private static final String HOST = "github.com";
 
     @Override
     public boolean update(LinkDto linkdto) {
