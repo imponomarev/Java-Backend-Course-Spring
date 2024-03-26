@@ -6,6 +6,7 @@ import edu.java.domain.dto.LinkDto;
 import edu.java.services.LinkService;
 import edu.java.updaters.LinkUpdater;
 import java.util.List;
+import edu.java.updaters.UpdatersHolder;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -21,7 +22,7 @@ public class LinkUpdaterScheduler {
 
     private final LinkService linkService;
     private final BotClient botClient;
-    private final List<? extends LinkUpdater> linkUpdatersList;
+    private final UpdatersHolder updatersHolder;
 
     @Value("#{@scheduler.secondsThreshold}")
     private long threshold;
@@ -35,10 +36,7 @@ public class LinkUpdaterScheduler {
             .toList());
 
         for (var link : oldLinks) {
-            LinkUpdater linkUpdater = linkUpdatersList.stream()
-                .filter(updater -> updater.support(link.url()))
-                .findFirst()
-                .get();
+            LinkUpdater linkUpdater = updatersHolder.getUpdaterByHost(link.url().getHost());
             if (linkUpdater.update(link)) {
                 List<Long> chatIds = linkService.getChatIdsOfLink(link.id());
                 botClient.sendUpdate(

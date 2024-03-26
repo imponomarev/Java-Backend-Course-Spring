@@ -4,12 +4,10 @@ import edu.java.clientGithub.GithubClient;
 import edu.java.clientGithub.GithubResponse;
 import edu.java.domain.dto.LinkDto;
 import edu.java.services.LinkService;
-import java.net.URI;
 import java.time.OffsetDateTime;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
-
 
 @Component
 @RequiredArgsConstructor
@@ -17,7 +15,7 @@ public class GithubLinkUpdater implements LinkUpdater {
 
     private final GithubClient gitHubWebClient;
     private final LinkService linkService;
-    private static final String HOST = "github.com";
+    private static String HOST = "github.com";
 
     @Override
     public boolean update(LinkDto linkdto) {
@@ -27,8 +25,10 @@ public class GithubLinkUpdater implements LinkUpdater {
         List<String> argsFromUrl = List.of(link.url().getPath().split("/"));
 
         GithubResponse githubResponse =
-            gitHubWebClient.fetchRepositoryInfo(argsFromUrl.get(1),
-                argsFromUrl.get(2)).blockFirst();
+            gitHubWebClient.fetchRepositoryInfo(
+                argsFromUrl.get(1),
+                argsFromUrl.get(2)
+            ).blockFirst();
 
         OffsetDateTime lastCheck = OffsetDateTime.now();
         if (!link.lastUpdate().equals(githubResponse.createdAt())) {
@@ -53,7 +53,7 @@ public class GithubLinkUpdater implements LinkUpdater {
     }
 
     @Override
-    public boolean support(URI url) {
-        return url.getHost().equals(HOST);
+    public String getHost() {
+        return HOST;
     }
 }

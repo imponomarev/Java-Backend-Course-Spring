@@ -2,6 +2,8 @@ package edu.java.domain.repositories;
 
 import edu.java.domain.dto.LinkDto;
 import java.net.URI;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
@@ -81,9 +83,12 @@ public class LinkRepository {
     }
 
     public List<LinkDto> findOldLinksByThreshold(Long threshold) {
-        String query = "SELECT * FROM db.link WHERE last_check <= NOW() - INTERVAL ? SECOND";
+
+        Timestamp thresholdTime = Timestamp.valueOf(LocalDateTime.now().minusSeconds(threshold));
+
+        String query = "SELECT * FROM db.link WHERE last_check <= ? LIMIT 10000";
         return jdbcClient.sql(query)
-            .param(threshold)
+            .param(thresholdTime)
             .query(LinkDto.class)
             .list();
     }

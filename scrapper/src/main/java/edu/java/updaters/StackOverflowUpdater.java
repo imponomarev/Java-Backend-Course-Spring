@@ -4,7 +4,6 @@ import edu.java.clientStackOverflow.StackOverflowClient;
 import edu.java.clientStackOverflow.StackOverflowResponse;
 import edu.java.domain.dto.LinkDto;
 import edu.java.services.LinkService;
-import java.net.URI;
 import java.time.OffsetDateTime;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -49,7 +48,7 @@ public class StackOverflowUpdater implements LinkUpdater {
     }
 
     @Override
-    public boolean support(URI url) {
-        return url.getHost().equals(HOST);
+    public String getHost() {
+        return HOST;
     }
 }
