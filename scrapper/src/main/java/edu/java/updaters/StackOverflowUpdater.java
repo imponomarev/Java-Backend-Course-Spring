@@ -53,9 +53,9 @@ public class StackOverflowUpdater implements LinkUpdater {
     }
 
     private String getResponseDescription(StackOverflowResponse response) {
-        return "The answer came to question " + response.questionId() +
-            " on StackOverflow by " + response.owner().displayName() +
-            " with reputation: " + response.owner().reputation();
+        return "The answer came to question " + response.questionId()
+            + " on StackOverflow by " + response.owner().displayName()
+            + " with reputation: " + response.owner().reputation();
     }
 
 }

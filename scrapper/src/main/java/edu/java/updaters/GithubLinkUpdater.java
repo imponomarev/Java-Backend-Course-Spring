@@ -58,8 +58,8 @@ public class GithubLinkUpdater implements LinkUpdater {
     }
 
     private String getResponseDescription(GithubResponse githubResponse) {
-        return githubResponse.type() + " has occurred " +
-            "in the repository " + githubResponse.repo().name() +
-            " by " + githubResponse.actor().login();
+        return githubResponse.type() + " has occurred "
+            + "in the repository " + githubResponse.repo().name()
+            + " by " + githubResponse.actor().login();
     }
 }
