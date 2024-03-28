@@ -18,7 +18,7 @@ public class GithubLinkUpdater implements LinkUpdater {
     private static final String HOST = "github.com";
 
     @Override
-    public boolean update(LinkDto linkdto) {
+    public String update(LinkDto linkdto) {
 
         LinkDto link = linkdto;
 
@@ -39,7 +39,7 @@ public class GithubLinkUpdater implements LinkUpdater {
                 lastCheck
             );
             linkService.update(link);
-            return true;
+            return getResponseDescription(githubResponse);
         } else {
             link = new LinkDto(
                 link.id(),
@@ -48,12 +48,18 @@ public class GithubLinkUpdater implements LinkUpdater {
                 lastCheck
             );
             linkService.update(link);
-            return false;
+            return null;
         }
     }
 
     @Override
     public String getHost() {
         return HOST;
+    }
+
+    private String getResponseDescription(GithubResponse githubResponse) {
+        return githubResponse.type() + " has occurred " +
+            "in the repository " + githubResponse.repo().name() +
+            " by " + githubResponse.actor().login();
     }
 }

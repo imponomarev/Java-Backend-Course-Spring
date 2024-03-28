@@ -37,13 +37,15 @@ public class LinkUpdaterScheduler {
 
         for (var link : oldLinks) {
             LinkUpdater linkUpdater = updatersHolder.getUpdaterByHost(link.url().getHost());
-            if (linkUpdater.update(link)) {
+            String description = linkUpdater.update(link);
+
+            if (description != null) {
                 List<Long> chatIds = linkService.getChatIdsOfLink(link.id());
                 botClient.sendUpdate(
                     new LinkUpdateRequest(
                         link.id(),
                         link.url(),
-                        link.url().toString() + "updated",
+                        description,
                         chatIds
                     )
                 );
