@@ -17,7 +17,7 @@ public class StackOverflowUpdater implements LinkUpdater {
     private static final String HOST = "stackoverflow.com";
 
     @Override
-    public boolean update(LinkDto linkDto) {
+    public String update(LinkDto linkDto) {
 
         LinkDto link = linkDto;
 
@@ -34,7 +34,7 @@ public class StackOverflowUpdater implements LinkUpdater {
                 lastCheck
             );
             linkService.update(link);
-            return true;
+            return getResponseDescription(response);
         } else {
             link = new LinkDto(
                 link.id(),
@@ -43,7 +43,7 @@ public class StackOverflowUpdater implements LinkUpdater {
                 lastCheck
             );
             linkService.update(link);
-            return false;
+            return null;
         }
     }
 
@@ -51,4 +51,11 @@ public class StackOverflowUpdater implements LinkUpdater {
     public String getHost() {
         return HOST;
     }
+
+    private String getResponseDescription(StackOverflowResponse response) {
+        return "The answer came to question " + response.questionId()
+            + " on StackOverflow by " + response.owner().displayName()
+            + " with reputation: " + response.owner().reputation();
+    }
+
 }
