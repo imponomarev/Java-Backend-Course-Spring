@@ -2,21 +2,22 @@ package edu.java.bot.commands;
 
 import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.request.SendMessage;
-import edu.java.bot.dao.IStorage;
-import java.net.URI;
+import edu.java.bot.api.model.AddLinkRequest;
+import edu.java.bot.api.model.LinkResponse;
+import edu.java.bot.client.ScrapperClient;
+import edu.java.bot.exceptions.ApiErrorException;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
-
+import java.net.URI;
+import java.util.Optional;
 
 @Component
+@RequiredArgsConstructor
 public class TrackCommand implements Command {
-    private final IStorage mapStorage;
-    private static final String SUCCESSFULLY_SUBSCRIBED = "you have successfully subscribed to the resource";
-    private static final String ALREADY_SUBSCRIBED = "You have already subscribed to this resource";
-    private static final String USER_ERROR = "you aren't logged in, type /start";
 
-    public TrackCommand(IStorage mapStorage) {
-        this.mapStorage = mapStorage;
-    }
+    private final ScrapperClient scrapperClient;
+    private static final String SUCCESSFULLY_SUBSCRIBED = "you have successfully subscribed to the resource";
+
 
     @Override
     public String command() {
@@ -30,39 +31,25 @@ public class TrackCommand implements Command {
 
     @Override
     public SendMessage handle(Update update) {
+
         String[] cmdAndUrl = update.message().text().split(" ");
 
         if (supports(update) && cmdAndUrl.length == 2) {
             String enteredUrl = cmdAndUrl[1];
             String scheme = "https://";
-            String uri;
-
-            if (!enteredUrl.startsWith(scheme)) {
-                uri = scheme + enteredUrl;
-            } else {
-                uri = enteredUrl;
-            }
-
-            URI link = URI.create(uri);
+            String uriStr = enteredUrl.startsWith(scheme) ? enteredUrl : scheme + enteredUrl;
 
             try {
-                if (!mapStorage.isSubExists(update, link)) {
-                    mapStorage.addSubscription(update, link);
-                    return new SendMessage(
-                        update.message().chat().id(),
-                        SUCCESSFULLY_SUBSCRIBED
-                    );
+                URI uri = URI.create(uriStr);
+                Optional<LinkResponse> response =
+                    scrapperClient.addLink(update.message().chat().id(), new AddLinkRequest(uri));
+                if (response.isPresent()) {
+                    return new SendMessage(update.message().chat().id(), SUCCESSFULLY_SUBSCRIBED);
                 } else {
-                    return new SendMessage(
-                        update.message().chat().id(),
-                        ALREADY_SUBSCRIBED
-                    );
+                    return new SendMessage(update.message().chat().id(), "Failed to subscribe due to an error.");
                 }
-            } catch (Exception e) {
-                return new SendMessage(
-                    update.message().chat().id(),
-                    USER_ERROR
-                );
+            } catch (ApiErrorException e) {
+                return new SendMessage(update.message().chat().id(), e.getMessage());
             }
         }
         return new SendMessage(

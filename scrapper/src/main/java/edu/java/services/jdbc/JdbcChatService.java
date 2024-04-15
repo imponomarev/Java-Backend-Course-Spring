@@ -1,32 +1,30 @@
 package edu.java.services.jdbc;
 
-import edu.java.domain.dto.ChatLinkDto;
-import edu.java.domain.repositories.ChatLinkRepository;
-import edu.java.domain.repositories.ChatRepository;
-import edu.java.domain.repositories.LinkRepository;
+import edu.java.domain.jdbc.dto.ChatLinkDto;
+import edu.java.domain.jdbc.repositories.JdbcChatLinkRepository;
+import edu.java.domain.jdbc.repositories.JdbcChatRepository;
+import edu.java.domain.jdbc.repositories.JdbcLinkRepository;
 import edu.java.exceptions.BadRequestException;
 import edu.java.exceptions.NotFoundException;
 import edu.java.services.ChatService;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-@Service
 @RequiredArgsConstructor
 public class JdbcChatService implements ChatService {
 
-    private final ChatLinkRepository chatLinkRepository;
-    private final LinkRepository linkRepository;
-    private final ChatRepository chatRepository;
+    private final JdbcChatLinkRepository jdbcChatLinkRepository;
+    private final JdbcLinkRepository jdbcLinkRepository;
+    private final JdbcChatRepository jdbcChatRepository;
 
     @Override
     @Transactional
     public void registerChat(Long id) {
-        chatRepository.findChatById(id).ifPresent(chat -> {
+        jdbcChatRepository.findChatById(id).ifPresent(chat -> {
             throw new BadRequestException("The chat is already registered", "You cannot re-register a chat");
         });
-        chatRepository.addChat(id);
+        jdbcChatRepository.addChat(id);
     }
 
     @Override
@@ -34,18 +32,18 @@ public class JdbcChatService implements ChatService {
     public void deleteChat(Long id) {
         notFoundCheck(id, "you cannot delete a non-existent chat");
 
-        List<ChatLinkDto> chatLinkDtoList = chatLinkRepository.findAllByChatId(id);
+        List<ChatLinkDto> chatLinkDtoList = jdbcChatLinkRepository.findAllByChatId(id);
 
         chatLinkDtoList.forEach(chatLinkDto -> {
             Long linkId = chatLinkDto.linkId();
-            linkRepository.remove(linkRepository.getLinkUrl(linkId));
+            jdbcLinkRepository.remove(jdbcLinkRepository.getLinkUrl(linkId));
         });
 
-        chatRepository.remove(id);
+        jdbcChatRepository.remove(id);
     }
 
     private void notFoundCheck(Long id, String message) {
-        if (chatRepository.exists(id)) {
+        if (!jdbcChatRepository.exists(id)) {
             throw new NotFoundException("The chat wasn't registered", message);
         }
     }

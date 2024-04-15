@@ -3,12 +3,11 @@ package edu.java.bot.commands;
 import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.request.SendMessage;
 import java.util.List;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
-
-
-
 @Component
+@RequiredArgsConstructor
 public class HelpCommand implements Command {
 
     private final List<Command> commandList;
@@ -16,9 +15,6 @@ public class HelpCommand implements Command {
     private static final String WRONG_COMMAND = "The command was entered incorrectly!"
         + " Type /help to view the available commands";
 
-    public HelpCommand(List<Command> commandList) {
-        this.commandList = commandList;
-    }
 
     @Override
     public String command() {

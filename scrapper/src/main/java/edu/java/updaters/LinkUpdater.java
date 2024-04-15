@@ -1,6 +1,6 @@
 package edu.java.updaters;
 
-import edu.java.domain.dto.LinkDto;
+import edu.java.domain.jdbc.dto.LinkDto;
 
 public interface LinkUpdater {
 

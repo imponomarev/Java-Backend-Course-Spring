@@ -1,11 +1,11 @@
 package edu.java.services.jdbc;
 
 import edu.java.api.model.LinkResponse;
-import edu.java.domain.dto.ChatLinkDto;
-import edu.java.domain.dto.LinkDto;
-import edu.java.domain.repositories.ChatLinkRepository;
-import edu.java.domain.repositories.ChatRepository;
-import edu.java.domain.repositories.LinkRepository;
+import edu.java.domain.jdbc.dto.ChatLinkDto;
+import edu.java.domain.jdbc.dto.LinkDto;
+import edu.java.domain.jdbc.repositories.JdbcChatLinkRepository;
+import edu.java.domain.jdbc.repositories.JdbcChatRepository;
+import edu.java.domain.jdbc.repositories.JdbcLinkRepository;
 import edu.java.exceptions.BadRequestException;
 import edu.java.exceptions.NotFoundException;
 import edu.java.services.LinkService;
@@ -15,16 +15,14 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-@Service
 @RequiredArgsConstructor
 public class JdbcLinkService implements LinkService {
 
-    private final LinkRepository linkRepository;
-    private final ChatLinkRepository chatLinkRepository;
-    private final ChatRepository chatRepository;
+    private final JdbcLinkRepository jdbcLinkRepository;
+    private final JdbcChatLinkRepository jdbcChatLinkRepository;
+    private final JdbcChatRepository jdbcChatRepository;
 
     @Override
     @Transactional
@@ -32,19 +30,19 @@ public class JdbcLinkService implements LinkService {
 
         notFoundCheck(chatId, "you cannot add a link for a non-existent chat");
 
-        if (linkRepository.findLinkByUrl(url).isEmpty()) {
-            linkRepository.addLink(new LinkDto(null, url, null, OffsetDateTime.now()));
+        if (jdbcLinkRepository.findLinkByUrl(url).isEmpty()) {
+            jdbcLinkRepository.addLink(new LinkDto(null, url, OffsetDateTime.now(), OffsetDateTime.now()));
         }
-        Long lindId = linkRepository.getLinkId(url);
-        if (chatLinkRepository.find(chatId, lindId).isPresent()) {
+        Long linkId = jdbcLinkRepository.getLinkId(url);
+        if (jdbcChatLinkRepository.find(chatId, linkId).isPresent()) {
             throw new BadRequestException(
                 "the link is already being tracked",
                 "you cannot add an already tracked link"
             );
         }
-        chatLinkRepository.add(chatId, lindId);
+        jdbcChatLinkRepository.add(chatId, linkId);
 
-        return new LinkDto(lindId, url, null, OffsetDateTime.now());
+        return new LinkDto(linkId, url, OffsetDateTime.now(), OffsetDateTime.now());
     }
 
     @Override
@@ -53,7 +51,7 @@ public class JdbcLinkService implements LinkService {
 
         notFoundCheck(chatId, "you cannot remove a link from a non-existent chat");
 
-        Optional<LinkDto> existingLink = linkRepository.findLinkByUrl(url);
+        Optional<LinkDto> existingLink = jdbcLinkRepository.findLinkByUrl(url);
 
         if (existingLink.isEmpty()) {
             throw new NotFoundException("the link doesn't exist", "you cannot delete a link that doesn't exist");
@@ -61,10 +59,10 @@ public class JdbcLinkService implements LinkService {
 
         Long linkId = existingLink.get().id();
 
-        chatLinkRepository.remove(chatId, linkId);
+        jdbcChatLinkRepository.remove(chatId, linkId);
 
-        if (chatLinkRepository.findAllByLinkId(linkId).isEmpty()) {
-            linkRepository.remove(url);
+        if (jdbcChatLinkRepository.findAllByLinkId(linkId).isEmpty()) {
+            jdbcLinkRepository.remove(url);
         }
 
         return new LinkResponse(linkId, url);
@@ -76,12 +74,12 @@ public class JdbcLinkService implements LinkService {
 
         notFoundCheck(chatId, "you can't get links for a non-existent chat");
 
-        List<ChatLinkDto> chatLinkDtoList = chatLinkRepository.findAllByChatId(chatId);
+        List<ChatLinkDto> chatLinkDtoList = jdbcChatLinkRepository.findAllByChatId(chatId);
 
         return chatLinkDtoList.stream()
             .map(chatLinkDto -> {
                 Long linkId = chatLinkDto.linkId();
-                Optional<LinkDto> linkDto = linkRepository.findLinkById(linkId);
+                Optional<LinkDto> linkDto = jdbcLinkRepository.findLinkById(linkId);
                 return linkDto.orElse(null);
             })
             .filter(Objects::nonNull)
@@ -91,26 +89,26 @@ public class JdbcLinkService implements LinkService {
     @Override
     @Transactional
     public void update(LinkDto link) {
-        linkRepository.update(link);
+        jdbcLinkRepository.update(link);
     }
 
     @Override
     @Transactional
     public List<LinkDto> getOldLinks(Long threshold) {
-        return linkRepository.findOldLinksByThreshold(threshold);
+        return jdbcLinkRepository.findOldLinksByThreshold(threshold);
     }
 
     @Override
     @Transactional
     public List<Long> getChatIdsOfLink(Long linkId) {
-        return chatLinkRepository.findAll().stream()
+        return jdbcChatLinkRepository.findAll().stream()
             .filter(chatLinkDto -> chatLinkDto.linkId().equals(linkId))
             .map(ChatLinkDto::chatId)
             .toList();
     }
 
     private void notFoundCheck(Long id, String message) {
-        if (chatRepository.exists(id)) {
+        if (!jdbcChatRepository.exists(id)) {
             throw new NotFoundException("The chat wasn't registered", message);
         }
     }

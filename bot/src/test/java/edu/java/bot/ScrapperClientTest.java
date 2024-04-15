@@ -12,10 +12,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
-import reactor.core.publisher.Mono;
-import reactor.test.StepVerifier;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.Optional;
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
 import static com.github.tomakehurst.wiremock.client.WireMock.delete;
 import static com.github.tomakehurst.wiremock.client.WireMock.equalTo;
@@ -23,15 +22,11 @@ import static com.github.tomakehurst.wiremock.client.WireMock.get;
 import static com.github.tomakehurst.wiremock.client.WireMock.post;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.assertj.core.api.AssertionsForClassTypes.tuple;
 
 class ScrapperClientTest {
     private ScrapperClient scrapperClient;
 
     private WireMockServer wireMockServer;
-
 
     @BeforeEach
     void init() {
@@ -48,7 +43,7 @@ class ScrapperClientTest {
     }
 
     @Test
-    void registerChatTest(){
+    void registerChatTest() {
         String responseBody = "chat is registered";
 
         wireMockServer.stubFor(post(urlEqualTo("/tg-chat/100"))
@@ -57,12 +52,10 @@ class ScrapperClientTest {
                 .withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                 .withBody(responseBody)));
 
+        Optional<String> response = scrapperClient.registerChat(100L);
 
-        Mono<String> response = scrapperClient.registerChat(100L);
-
-        StepVerifier.create(response)
-            .expectNext(responseBody)
-            .verifyComplete();
+        assertThat(response).isPresent();
+        assertThat(response.get()).isEqualTo(responseBody);
     }
 
     @Test
@@ -75,26 +68,25 @@ class ScrapperClientTest {
                 .withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                 .withBody(responseBody)));
 
-        Mono<String> response = scrapperClient.deleteChat(100L);
+        Optional<String> response = scrapperClient.deleteChat(100L);
 
-        StepVerifier.create(response)
-            .expectNext(responseBody)
-            .verifyComplete();
+        assertThat(response).isPresent();
+        assertThat(response.get()).isEqualTo(responseBody);
     }
 
     @Test
     void getLinksTest() {
         String responseBody = """
-        {
-            "links":[
-                {
-                    "id":100,
-                    "url":"test-url"
-                }
-            ],
-            "size":1
-        }
-        """;
+            {
+                "links":[
+                    {
+                        "id":100,
+                        "url":"test-url"
+                    }
+                ],
+                "size":1
+            }
+            """;
 
         wireMockServer.stubFor(get(urlEqualTo("/links"))
             .withHeader("Tg-Chat-Id", equalTo("100"))
@@ -103,19 +95,12 @@ class ScrapperClientTest {
                 .withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                 .withBody(responseBody)));
 
-        Mono<ListLinksResponse> response = scrapperClient.getLinks(100L);
+        Optional<ListLinksResponse> response = scrapperClient.getLinks(100L);
 
-        StepVerifier.create(response)
-            .consumeNextWith(resp -> {
-                assertNotNull(resp);
-                assertEquals(1, resp.size());
-                assertThat(resp.links())
-                    .hasSize(1)
-                    .extracting(LinkResponse::id, link -> link.url().getPath())
-                    .containsExactly(tuple(100L, "test-url"));
-
-            })
-            .verifyComplete();
+        assertThat(response).isPresent();
+        assertThat(response.get().links()).hasSize(1);
+        assertThat(response.get().links().get(0).id()).isEqualTo(100L);
+        assertThat(response.get().links().get(0).url()).hasPath("test-url");
     }
 
     @Test
@@ -135,20 +120,12 @@ class ScrapperClientTest {
                 .withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                 .withBody(responseBody)));
 
-        Mono<LinkResponse> response = scrapperClient.addLink(
-            100L, "test-url"
-        );
+        AddLinkRequest request = new AddLinkRequest(new URI("test-url"));
+        Optional<LinkResponse> response = scrapperClient.addLink(100L, request);
 
-
-
-        StepVerifier.create(response)
-            .consumeNextWith(resp -> {
-                assertNotNull(resp);
-                assertEquals(100, resp.id());
-                assertEquals("test-url", resp.url().getPath());
-
-            })
-            .verifyComplete();
+        assertThat(response).isPresent();
+        assertThat(response.get().id()).isEqualTo(100);
+        assertThat(response.get().url()).isEqualTo(new URI("test-url"));
     }
 
     @Test
@@ -168,18 +145,12 @@ class ScrapperClientTest {
                 .withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                 .withBody(responseBody)));
 
+        RemoveLinkRequest request = new RemoveLinkRequest(new URI("test-url"));
+        Optional<LinkResponse> response = scrapperClient.removeLink(100L, request);
 
-        Mono<LinkResponse> response = scrapperClient.removeLink(
-            100L, new RemoveLinkRequest(new URI("test-url"))
-        );
-
-        StepVerifier.create(response)
-            .consumeNextWith(resp -> {
-                assertNotNull(resp);
-                assertEquals(100, resp.id());
-                assertEquals("test-url", resp.url().getPath());
-
-            })
-            .verifyComplete();
+        assertThat(response).isPresent();
+        assertThat(response.get().id()).isEqualTo(100);
+        assertThat(response.get().url()).isEqualTo(new URI("test-url"));
     }
 }
+

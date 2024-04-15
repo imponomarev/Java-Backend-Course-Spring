@@ -1,36 +1,47 @@
 package edu.java.bot;
 
+import com.pengrad.telegrambot.TelegramBot;
 import edu.java.bot.api.model.LinkUpdateRequest;
-import edu.java.bot.exceptions.UpdateAlreadyExistsException;
 import edu.java.bot.service.BotService;
+import edu.java.exceptions.BadRequestException;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.validation.BindingResult;
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.List;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.ThrowableAssert.catchThrowableOfType;
+import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.*;
 
-class BotServiceTest {
+@ExtendWith(MockitoExtension.class)
+public class BotServiceTest {
+
+    @Mock
+    private TelegramBot telegramBot;
+
+    @Mock
+    private BindingResult bindingResult;
+
+    private BotService botService;
+
+    @BeforeEach
+    void setUp() {
+        botService = new BotService(telegramBot);
+    }
 
     @Test
-    void twiceAddingUpdateTest() throws URISyntaxException, UpdateAlreadyExistsException {
-        BotService botService = new BotService();
-        LinkUpdateRequest update = new LinkUpdateRequest(
-            100L,
-            new URI("test-url"),
-            "description",
-            List.of(111L, 222L)
-        );
+    void shouldThrowBadRequestExceptionIfBindingResultHasErrors() {
+        LinkUpdateRequest linkUpdateRequest =
+            new LinkUpdateRequest(1L, URI.create("https://example.com"), "Update Available!", List.of(123L, 1234L));
+        when(bindingResult.hasErrors()).thenReturn(true);
 
-        botService.add(update);
+        BadRequestException exception = assertThrows(BadRequestException.class, () -> {
+            botService.add(linkUpdateRequest, bindingResult);
+        });
 
-        Throwable actualException = catchThrowableOfType(
-            () -> botService.add(update),
-            UpdateAlreadyExistsException.class
-        );
-
-        assertThat(actualException)
-            .isInstanceOf(UpdateAlreadyExistsException.class);
-
+        assertEquals("Invalid request parameters", exception.getMessage());
+        assertEquals("Try again", exception.getDescription());
     }
 }

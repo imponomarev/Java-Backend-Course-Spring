@@ -4,7 +4,7 @@ import edu.java.api.model.AddLinkRequest;
 import edu.java.api.model.LinkResponse;
 import edu.java.api.model.ListLinksResponse;
 import edu.java.api.model.RemoveLinkRequest;
-import edu.java.domain.dto.LinkDto;
+import edu.java.domain.jdbc.dto.LinkDto;
 import edu.java.services.LinkService;
 import jakarta.validation.Valid;
 import java.util.List;
@@ -41,7 +41,7 @@ public class LinkController {
     @PostMapping("/links")
     public LinkResponse addLink(
         @RequestHeader("Tg-Chat-Id") Long id,
-        @RequestBody @Valid AddLinkRequest request
+        @RequestBody AddLinkRequest request
     ) {
         linkService.addLink(id, request.link());
         log.info("link has been added");

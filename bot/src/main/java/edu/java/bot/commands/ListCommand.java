@@ -2,24 +2,21 @@ package edu.java.bot.commands;
 
 import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.request.SendMessage;
-import edu.java.bot.dao.IStorage;
+import edu.java.bot.api.model.LinkResponse;
+import edu.java.bot.client.ScrapperClient;
 import java.net.URI;
 import java.util.List;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
-
 @Component
+@RequiredArgsConstructor
 public class ListCommand implements Command {
 
-    private final IStorage mapStorage;
+    private final ScrapperClient scrapperClient;
     private static final String WITHOUT_SUBS = "You aren't subscribed to anything";
-    private static final String USER_ERROR = "you aren't logged in, type /start";
     private static final String WRONG_COMMAND = "The command was entered incorrectly!"
         + " Type /list to view your subscriptions";
-
-    public ListCommand(IStorage mapStorage) {
-        this.mapStorage = mapStorage;
-    }
 
     @Override
     public String command() {
@@ -35,7 +32,12 @@ public class ListCommand implements Command {
     public SendMessage handle(Update update) {
         if (supports(update)) {
             try {
-                List<URI> links = mapStorage.getSubscriptions(update);
+                List<URI> links = scrapperClient.getLinks(update.message().chat().id())
+                    .get()
+                    .links()
+                    .stream()
+                    .map(LinkResponse::url)
+                    .toList();
 
                 if (links.isEmpty()) {
                     return new SendMessage(
@@ -56,7 +58,7 @@ public class ListCommand implements Command {
             } catch (Exception e) {
                 return new SendMessage(
                     update.message().chat().id(),
-                    USER_ERROR
+                    e.getMessage()
                 );
             }
         }
