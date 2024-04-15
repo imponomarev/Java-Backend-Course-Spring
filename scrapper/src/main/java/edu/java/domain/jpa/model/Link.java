@@ -1,6 +1,9 @@
 package edu.java.domain.jpa.model;
 
 import edu.java.domain.jpa.converter.UriConverter;
+import java.net.URI;
+import java.time.OffsetDateTime;
+import java.util.List;
 import jakarta.persistence.Column;
 import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
@@ -11,9 +14,6 @@ import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import java.net.URI;
-import java.time.OffsetDateTime;
-import java.util.List;
 
 @Data
 @Entity

@@ -12,7 +12,7 @@ import java.util.Optional;
 
 public interface JpaLinkRepository extends JpaRepository<Link, Long> {
 
-    public Optional<Link> findLinkByUrl(URI url);
+    Optional<Link> findLinkByUrl(URI url);
 
     @Query("SELECT l FROM Link l WHERE l.lastCheck <= :thresholdTime ORDER BY l.lastCheck DESC")
     Page<Link> findOldLinksByThreshold(@Param("thresholdTime") OffsetDateTime thresholdTime, Pageable pageable);

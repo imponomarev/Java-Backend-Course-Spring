@@ -7,11 +7,11 @@ import edu.java.domain.jpa.repositories.JpaLinkRepository;
 import edu.java.exceptions.BadRequestException;
 import edu.java.exceptions.NotFoundException;
 import edu.java.services.ChatService;
-import lombok.RequiredArgsConstructor;
-import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import lombok.RequiredArgsConstructor;
+import org.springframework.transaction.annotation.Transactional;
 
 @RequiredArgsConstructor
 public class JpaChatService implements ChatService {
@@ -40,7 +40,6 @@ public class JpaChatService implements ChatService {
         Optional<Chat> chat = jpaChatRepository.findById(id);
 
         List<Link> links = chat.get().getLinks();
-
 
         if (!links.isEmpty()) {
             List<Link> safeList = new ArrayList<>(links);

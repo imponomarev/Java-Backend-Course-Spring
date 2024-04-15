@@ -9,22 +9,27 @@ import edu.java.domain.jpa.repositories.JpaLinkRepository;
 import edu.java.exceptions.BadRequestException;
 import edu.java.exceptions.NotFoundException;
 import edu.java.services.LinkService;
-import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.transaction.annotation.Transactional;
 import java.net.URI;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.transaction.annotation.Transactional;
 
 @RequiredArgsConstructor
 public class JpaLinkService implements LinkService {
 
     private final JpaLinkRepository jpaLinkRepository;
     private final JpaChatRepository jpaChatRepository;
+
+    private final static String NOT_EXIST_LINK = "the link doesn't exist";
+    private final static String CANNOT_DELETE = "you cannot delete a link that doesn't exist";
+    private final static int PAGE_SIZE = 10000;
+
 
     @Override
     @Transactional
@@ -73,12 +78,12 @@ public class JpaLinkService implements LinkService {
         Optional<Chat> chat = jpaChatRepository.findById(chatId);
 
         if (existingLink.isEmpty()) {
-            throw new NotFoundException("the link doesn't exist", "you cannot delete a link that doesn't exist");
+            throw new NotFoundException(NOT_EXIST_LINK, CANNOT_DELETE);
         } else {
             Link link = existingLink.get();
 
             if (!chat.get().getLinks().contains(link)) {
-                throw new NotFoundException("the link doesn't exist", "you cannot delete a link that doesn't exist");
+                throw new NotFoundException(NOT_EXIST_LINK, CANNOT_DELETE);
             }
 
             link.removeChat(chat.get());
@@ -125,7 +130,7 @@ public class JpaLinkService implements LinkService {
 
         OffsetDateTime thresholdTime = OffsetDateTime.now().minusSeconds(threshold);
 
-        Pageable limit = PageRequest.of(0, 10000);
+        Pageable limit = PageRequest.of(0, PAGE_SIZE);
 
         Page<Link> pageOfLinks = jpaLinkRepository.findOldLinksByThreshold(thresholdTime, limit);
 
