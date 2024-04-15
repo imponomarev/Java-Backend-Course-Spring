@@ -18,8 +18,11 @@ public class BotController {
     private final BotService botService;
 
     @PostMapping
-    public String process(@RequestBody @Valid @NotNull LinkUpdateRequest linkUpdateRequest, BindingResult bindingResult) {
+    public String process(@RequestBody @Valid @NotNull LinkUpdateRequest linkUpdateRequest,
+        BindingResult bindingResult) {
+
         botService.add(linkUpdateRequest, bindingResult);
         return "The update has been processed";
+
     }
 }

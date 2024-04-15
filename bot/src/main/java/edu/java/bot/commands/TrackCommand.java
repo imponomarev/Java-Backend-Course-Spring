@@ -6,10 +6,11 @@ import edu.java.bot.api.model.AddLinkRequest;
 import edu.java.bot.api.model.LinkResponse;
 import edu.java.bot.client.ScrapperClient;
 import edu.java.bot.exceptions.ApiErrorException;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Component;
 import java.net.URI;
 import java.util.Optional;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Component;
+
 
 @Component
 @RequiredArgsConstructor

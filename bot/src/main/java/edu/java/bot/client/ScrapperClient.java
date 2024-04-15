@@ -20,6 +20,7 @@ public class ScrapperClient {
     private static final String CHAT = "tg-chat/{id}";
     private static final String LINKS = "/links";
     private static final String HEADER = "Tg-Chat-Id";
+    private static final String ERROR_API_CALL = "Error making API call: {}";
     private final WebClient webClient;
 
     public ScrapperClient(String baseUrl) {
@@ -40,7 +41,7 @@ public class ScrapperClient {
                 resp -> resp
                     .bodyToMono(ApiErrorResponse.class)
                     .flatMap(apiError -> {
-                        log.error("Error making API call: {}", apiError);
+                        log.error(ERROR_API_CALL, apiError);
                         return Mono.error(new ApiErrorException(apiError));
                     })
             )
@@ -57,7 +58,7 @@ public class ScrapperClient {
                 HttpStatusCode::is4xxClientError,
                 resp -> resp.bodyToMono(ApiErrorResponse.class)
                     .flatMap(apiError -> {
-                        log.error("Error making API call: {}", apiError);
+                        log.error(ERROR_API_CALL, apiError);
                         return Mono.error(new ApiErrorException(apiError));
                     })
             )
@@ -76,7 +77,7 @@ public class ScrapperClient {
                 resp -> resp
                     .bodyToMono(ApiErrorResponse.class)
                     .flatMap(apiError -> {
-                        log.error("Error making API call: {}", apiError);
+                        log.error(ERROR_API_CALL, apiError);
                         return Mono.error(new ApiErrorException(apiError));
                     })
             )
@@ -97,7 +98,7 @@ public class ScrapperClient {
                     response -> response.bodyToMono(ApiErrorResponse.class)
                         .flatMap(apiError -> {
 
-                            log.error("Error making API call: {}", apiError);
+                            log.error(ERROR_API_CALL, apiError);
 
                             return Mono.error(new ApiErrorException(apiError));
                         }))
@@ -123,7 +124,7 @@ public class ScrapperClient {
                 resp -> resp
                     .bodyToMono(ApiErrorResponse.class)
                     .flatMap(apiError -> {
-                        log.error("Error making API call: {}", apiError);
+                        log.error(ERROR_API_CALL, apiError);
                         return Mono.error(new ApiErrorException(apiError));
                     })
             )

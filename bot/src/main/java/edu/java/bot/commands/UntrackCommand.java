@@ -4,8 +4,8 @@ import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.request.SendMessage;
 import edu.java.bot.api.model.RemoveLinkRequest;
 import edu.java.bot.client.ScrapperClient;
-import java.net.URI;
 import edu.java.bot.exceptions.ApiErrorException;
+import java.net.URI;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
