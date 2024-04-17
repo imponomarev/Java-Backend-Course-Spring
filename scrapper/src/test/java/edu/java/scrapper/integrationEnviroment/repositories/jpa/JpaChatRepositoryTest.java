@@ -19,7 +19,7 @@ import java.util.Arrays;
 import java.util.List;
 
 @Testcontainers
-@SpringBootTest
+@SpringBootTest(properties = "app.database-access-type=jpa")
 class JpaChatRepositoryTest extends IntegrationTest {
 
     @Autowired

@@ -8,11 +8,13 @@ import liquibase.database.DatabaseFactory;
 import liquibase.database.jvm.JdbcConnection;
 import liquibase.exception.LiquibaseException;
 import liquibase.resource.DirectoryResourceAccessor;
+import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.testcontainers.containers.JdbcDatabaseContainer;
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Testcontainers;
+import javax.sql.DataSource;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.nio.file.Path;
@@ -23,7 +25,8 @@ import java.util.Properties;
 
 @Testcontainers
 public class IntegrationTest {
-    public static PostgreSQLContainer<?> POSTGRES;
+    public static final PostgreSQLContainer<?> POSTGRES;
+    public static final DataSource dataSource;
 
     static {
         POSTGRES = new PostgreSQLContainer<>("postgres:15")
@@ -32,6 +35,12 @@ public class IntegrationTest {
             .withPassword("postgres")
             .withReuse(true);
         POSTGRES.start();
+
+        dataSource = DataSourceBuilder.create()
+            .url(POSTGRES.getJdbcUrl())
+            .username(POSTGRES.getUsername())
+            .password(POSTGRES.getPassword())
+            .build();
 
         try {
             runMigrations(POSTGRES);

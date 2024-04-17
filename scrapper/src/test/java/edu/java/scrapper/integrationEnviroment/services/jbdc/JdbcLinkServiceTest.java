@@ -5,6 +5,7 @@ import edu.java.domain.jdbc.dto.LinkDto;
 import edu.java.domain.jdbc.repositories.JdbcChatLinkRepository;
 import edu.java.domain.jdbc.repositories.JdbcChatRepository;
 import edu.java.domain.jdbc.repositories.JdbcLinkRepository;
+import edu.java.scrapper.integrationEnviroment.IntegrationTest;
 import edu.java.services.jdbc.JdbcChatService;
 import edu.java.services.jdbc.JdbcLinkService;
 import org.junit.jupiter.api.Assertions;
@@ -20,7 +21,7 @@ import java.util.Optional;
 
 @Testcontainers
 @SpringBootTest(properties = "app.database-access-type=jdbc")
-public class JdbcLinkServiceTest {
+public class JdbcLinkServiceTest extends IntegrationTest {
 
     @Autowired
     private JdbcChatRepository chatRepository;

@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Testcontainers
-@SpringBootTest
+@SpringBootTest(properties = "app.database-access-type=jdbc")
 class JdbcChatRepositoryTest extends IntegrationTest {
 
     @Autowired

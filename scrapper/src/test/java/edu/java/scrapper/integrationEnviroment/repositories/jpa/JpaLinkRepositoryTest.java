@@ -18,7 +18,7 @@ import java.util.HashSet;
 import java.util.Optional;
 
 @Testcontainers
-@SpringBootTest
+@SpringBootTest(properties = "app.database-access-type=jpa")
 class JpaLinkRepositoryTest extends IntegrationTest {
 
     @Autowired

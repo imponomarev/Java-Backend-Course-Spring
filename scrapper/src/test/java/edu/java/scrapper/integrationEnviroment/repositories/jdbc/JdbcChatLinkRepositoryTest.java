@@ -17,7 +17,7 @@ import java.net.URI;
 import java.util.List;
 
 @Testcontainers
-@SpringBootTest
+@SpringBootTest(properties = "app.database-access-type=jdbc")
 class JdbcChatLinkRepositoryTest extends IntegrationTest {
 
     @Autowired
