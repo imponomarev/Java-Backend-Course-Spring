@@ -4,6 +4,7 @@ import edu.java.domain.jdbc.dto.LinkDto;
 import edu.java.domain.jpa.model.Chat;
 import edu.java.domain.jpa.repositories.JpaChatRepository;
 import edu.java.domain.jpa.repositories.JpaLinkRepository;
+import edu.java.scrapper.integrationEnviroment.IntegrationTest;
 import edu.java.services.jpa.JpaChatService;
 import edu.java.services.jpa.JpaLinkService;
 import org.junit.jupiter.api.Assertions;
@@ -17,8 +18,8 @@ import java.net.URI;
 import java.util.List;
 
 @Testcontainers
-@SpringBootTest
-class JpaLinkServiceTest {
+@SpringBootTest(properties = "app.database-access-type=jpa")
+class JpaLinkServiceTest extends IntegrationTest {
 
     @Autowired
     private JpaChatRepository chatRepository;

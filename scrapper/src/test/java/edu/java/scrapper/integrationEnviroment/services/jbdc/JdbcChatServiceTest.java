@@ -12,7 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
 @Testcontainers
-@SpringBootTest
+@SpringBootTest(properties = "app.database-access-type=jdbc")
 public class JdbcChatServiceTest extends IntegrationTest {
 
     @Autowired

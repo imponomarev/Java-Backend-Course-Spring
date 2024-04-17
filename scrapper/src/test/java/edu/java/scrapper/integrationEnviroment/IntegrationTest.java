@@ -29,7 +29,8 @@ public class IntegrationTest {
         POSTGRES = new PostgreSQLContainer<>("postgres:15")
             .withDatabaseName("scrapper")
             .withUsername("postgres")
-            .withPassword("postgres");
+            .withPassword("postgres")
+            .withReuse(true);
         POSTGRES.start();
 
         try {

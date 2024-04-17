@@ -3,6 +3,7 @@ package edu.java.scrapper.integrationEnviroment.services.jpa;
 import edu.java.domain.jpa.model.Chat;
 import edu.java.domain.jpa.repositories.JpaChatRepository;
 import edu.java.domain.jpa.repositories.JpaLinkRepository;
+import edu.java.scrapper.integrationEnviroment.IntegrationTest;
 import edu.java.services.jpa.JpaChatService;
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.Assertions;
@@ -14,8 +15,8 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 import java.util.ArrayList;
 
 @Testcontainers
-@SpringBootTest
-class JpaChatServiceTest {
+@SpringBootTest(properties = "app.database-access-type=jpa")
+class JpaChatServiceTest extends IntegrationTest {
 
     @Autowired
     private JpaChatRepository chatRepository;

@@ -4,7 +4,7 @@ app:
     interval: 10000
     force-check-delay: 10s
     seconds-threshold: 60
-  database-access-type: jpa
+  database-access-type: jdbc
 
 spring:
   application:

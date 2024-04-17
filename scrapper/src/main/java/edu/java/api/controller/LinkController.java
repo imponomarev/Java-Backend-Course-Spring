@@ -41,7 +41,7 @@ public class LinkController {
     @PostMapping("/links")
     public LinkResponse addLink(
         @RequestHeader("Tg-Chat-Id") Long id,
-        @RequestBody AddLinkRequest request
+        @RequestBody @Valid AddLinkRequest request
     ) {
         linkService.addLink(id, request.link());
         log.info("link has been added");
