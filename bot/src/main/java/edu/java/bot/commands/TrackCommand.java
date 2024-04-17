@@ -18,6 +18,7 @@ public class TrackCommand implements Command {
 
     private final ScrapperClient scrapperClient;
     private static final String SUCCESSFULLY_SUBSCRIBED = "you have successfully subscribed to the resource";
+    private static final String PATTERN = "\\s+";
 
 
     @Override
@@ -33,7 +34,7 @@ public class TrackCommand implements Command {
     @Override
     public SendMessage handle(Update update) {
 
-        String[] cmdAndUrl = update.message().text().split(" ");
+        String[] cmdAndUrl = update.message().text().trim().split(PATTERN);
 
         if (supports(update) && cmdAndUrl.length == 2) {
             String enteredUrl = cmdAndUrl[1];
