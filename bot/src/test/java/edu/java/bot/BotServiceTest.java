@@ -2,8 +2,8 @@ package edu.java.bot;
 
 import com.pengrad.telegrambot.TelegramBot;
 import edu.java.bot.api.model.LinkUpdateRequest;
+import edu.java.bot.exceptions.BadRequestException;
 import edu.java.bot.service.BotService;
-import edu.java.exceptions.BadRequestException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
