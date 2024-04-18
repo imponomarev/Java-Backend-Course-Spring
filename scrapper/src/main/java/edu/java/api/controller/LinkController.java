@@ -4,7 +4,7 @@ import edu.java.api.model.AddLinkRequest;
 import edu.java.api.model.LinkResponse;
 import edu.java.api.model.ListLinksResponse;
 import edu.java.api.model.RemoveLinkRequest;
-import edu.java.domain.dto.LinkDto;
+import edu.java.domain.jdbc.dto.LinkDto;
 import edu.java.services.LinkService;
 import jakarta.validation.Valid;
 import java.util.List;

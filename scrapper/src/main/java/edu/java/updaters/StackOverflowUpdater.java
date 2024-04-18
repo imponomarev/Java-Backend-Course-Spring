@@ -2,7 +2,7 @@ package edu.java.updaters;
 
 import edu.java.clientStackOverflow.StackOverflowClient;
 import edu.java.clientStackOverflow.StackOverflowResponse;
-import edu.java.domain.dto.LinkDto;
+import edu.java.domain.jdbc.dto.LinkDto;
 import edu.java.services.LinkService;
 import java.time.OffsetDateTime;
 import lombok.RequiredArgsConstructor;

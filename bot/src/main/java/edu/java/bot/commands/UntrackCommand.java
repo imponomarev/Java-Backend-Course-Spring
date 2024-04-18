@@ -2,20 +2,19 @@ package edu.java.bot.commands;
 
 import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.request.SendMessage;
-import edu.java.bot.dao.IStorage;
+import edu.java.bot.api.model.RemoveLinkRequest;
+import edu.java.bot.client.ScrapperClient;
+import edu.java.bot.exceptions.ApiErrorException;
 import java.net.URI;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 @Component
+@RequiredArgsConstructor
 public class UntrackCommand implements Command {
-    private final IStorage mapStorage;
-    private static final String SUCCESSFULLY_UNSUBSCRIBED = "you have successfully unsubscribed from the resource";
-    private static final String DONT_SUBSCRIBED = "You don't subscribe to this resource";
-    private static final String USER_ERROR = "you aren't logged in, type /start";
 
-    public UntrackCommand(IStorage mapStorage) {
-        this.mapStorage = mapStorage;
-    }
+    private final ScrapperClient scrapperClient;
+    private static final String SUCCESSFULLY_UNSUBSCRIBED = "you have successfully unsubscribed from the resource";
 
     @Override
     public String command() {
@@ -45,22 +44,17 @@ public class UntrackCommand implements Command {
             URI link = URI.create(uri);
 
             try {
-                if (mapStorage.isSubExists(update, link)) {
-                    mapStorage.deleteSubscription(update, link);
-                    return new SendMessage(
-                        update.message().chat().id(),
-                        SUCCESSFULLY_UNSUBSCRIBED
-                    );
-                } else {
-                    return new SendMessage(
-                        update.message().chat().id(),
-                        DONT_SUBSCRIBED
-                    );
-                }
-            } catch (Exception e) {
+
+                scrapperClient.removeLink(update.message().chat().id(), new RemoveLinkRequest(link));
                 return new SendMessage(
                     update.message().chat().id(),
-                    USER_ERROR
+                    SUCCESSFULLY_UNSUBSCRIBED
+                );
+
+            } catch (ApiErrorException e) {
+                return new SendMessage(
+                    update.message().chat().id(),
+                    e.getMessage()
                 );
             }
         }

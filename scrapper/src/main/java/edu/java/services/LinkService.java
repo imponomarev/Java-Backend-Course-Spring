@@ -1,7 +1,7 @@
 package edu.java.services;
 
 import edu.java.api.model.LinkResponse;
-import edu.java.domain.dto.LinkDto;
+import edu.java.domain.jdbc.dto.LinkDto;
 import java.net.URI;
 import java.util.List;
 

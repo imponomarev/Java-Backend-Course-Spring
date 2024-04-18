@@ -2,7 +2,7 @@ package edu.java.updaters;
 
 import edu.java.clientGithub.GithubClient;
 import edu.java.clientGithub.GithubResponse;
-import edu.java.domain.dto.LinkDto;
+import edu.java.domain.jdbc.dto.LinkDto;
 import edu.java.services.LinkService;
 import java.time.OffsetDateTime;
 import java.util.List;
@@ -48,7 +48,7 @@ public class GithubLinkUpdater implements LinkUpdater {
                 lastCheck
             );
             linkService.update(link);
-            return null;
+            return "";
         }
     }
 

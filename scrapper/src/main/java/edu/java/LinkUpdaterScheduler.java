@@ -2,7 +2,7 @@ package edu.java;
 
 import edu.java.api.client.BotClient;
 import edu.java.api.model.LinkUpdateRequest;
-import edu.java.domain.dto.LinkDto;
+import edu.java.domain.jdbc.dto.LinkDto;
 import edu.java.services.LinkService;
 import edu.java.updaters.LinkUpdater;
 import edu.java.updaters.UpdatersHolder;
@@ -24,10 +24,10 @@ public class LinkUpdaterScheduler {
     private final BotClient botClient;
     private final UpdatersHolder updatersHolder;
 
-    @Value("#{@scheduler.secondsThreshold}")
+    @Value("${app.scheduler.seconds-threshold}")
     private long threshold;
 
-    @Scheduled(fixedDelayString = "#{@scheduler.interval}")
+    @Scheduled(fixedDelayString = "${app.scheduler.interval}")
     public void update() {
         List<LinkDto> oldLinks = linkService.getOldLinks(threshold);
 
