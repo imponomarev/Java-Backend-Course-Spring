@@ -32,7 +32,7 @@ public class ListCommand implements Command {
     public SendMessage handle(Update update) {
         if (supports(update)) {
             try {
-                List<URI> links = scrapperClient.getLinks(update.message().chat().id())
+                List<URI> links = scrapperClient.retryGetLinks(update.message().chat().id())
                     .get()
                     .links()
                     .stream()

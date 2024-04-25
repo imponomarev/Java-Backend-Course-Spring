@@ -25,7 +25,7 @@ public class GithubLinkUpdater implements LinkUpdater {
         List<String> argsFromUrl = List.of(link.url().getPath().split("/"));
 
         GithubResponse githubResponse =
-            gitHubWebClient.fetchRepositoryInfo(
+            gitHubWebClient.retryFetchRepositoryInfo(
                 argsFromUrl.get(1),
                 argsFromUrl.get(2)
             ).blockFirst();

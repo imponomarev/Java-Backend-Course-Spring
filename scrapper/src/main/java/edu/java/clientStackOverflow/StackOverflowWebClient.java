@@ -4,7 +4,14 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import java.io.IOException;
+import java.util.List;
+import edu.java.retry.BackoffType;
+import edu.java.retry.RetryGenerator;
+import io.github.resilience4j.retry.Retry;
+import jakarta.annotation.PostConstruct;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
@@ -15,6 +22,19 @@ public class StackOverflowWebClient implements StackOverflowClient {
     private static final String DEFAULT_URL = "https://api.stackexchange.com/2.3";
 
     private final WebClient webClient;
+    private Retry retry;
+
+    @Value(value = "${api.stackoverflow.backOffType}")
+    private BackoffType backoffType;
+
+    @Value(value = "${api.stackoverflow.retryCount}")
+    private int retryCount;
+
+    @Value(value = "${api.stackoverflow.retryInterval}")
+    private int retryInterval;
+
+    @Value(value = "${api.stackoverflow.statuses}")
+    private List<HttpStatus> statuses;
 
     public StackOverflowWebClient() {
         webClient = WebClient.builder()
@@ -30,6 +50,13 @@ public class StackOverflowWebClient implements StackOverflowClient {
             .build();
     }
 
+    @PostConstruct
+    private void initRetry() {
+        retry = RetryGenerator.generate(backoffType, retryCount, retryInterval, statuses,
+            "stackoverflow-client"
+        );
+    }
+
     @Override
     public Flux<StackOverflowResponse> fetchQuestion(long questionId) {
         return webClient.get()
@@ -42,6 +69,11 @@ public class StackOverflowWebClient implements StackOverflowClient {
             .retrieve()
             .bodyToMono(String.class)
             .flatMapMany(this::parseJsonAndReturnMono);
+    }
+
+    @Override
+    public Flux<StackOverflowResponse> retryFetchQuestion(long questionId) {
+        return Retry.decorateSupplier(retry, () -> fetchQuestion(questionId)).get();
     }
 
     private Mono<StackOverflowResponse> parseJsonAndReturnMono(String json) {
