@@ -47,7 +47,7 @@ public class UntrackCommandTest {
     }
     @Test
     void shouldUnsubscribeSuccessfully() {
-        when(scrapperClient.removeLink(eq(123L), any(RemoveLinkRequest.class))).thenReturn(Optional.of(new LinkResponse(
+        when(scrapperClient.retryRemoveLink(eq(123L), any(RemoveLinkRequest.class))).thenReturn(Optional.of(new LinkResponse(
             1L,
             URI.create("https://example.com"))));
 

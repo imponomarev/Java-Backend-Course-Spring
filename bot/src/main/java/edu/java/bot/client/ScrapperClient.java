@@ -77,8 +77,8 @@ public class ScrapperClient {
             .blockOptional();
     }
 
-    public void retryRegisterChat(Long id) {
-        Retry.decorateRunnable(retry, () -> registerChat(id)).run();
+    public Optional<String> retryRegisterChat(Long id) {
+        return Retry.decorateSupplier(retry, () -> registerChat(id)).get();
     }
 
     public Optional<String> deleteChat(Long id) {
@@ -98,8 +98,8 @@ public class ScrapperClient {
             .blockOptional();
     }
 
-    public void retryDeleteChat(Long id) {
-        Retry.decorateRunnable(retry, () -> deleteChat(id)).run();
+    public Optional<String> retryDeleteChat(Long id) {
+        return Retry.decorateSupplier(retry, () -> deleteChat(id)).get();
     }
 
     public Optional<ListLinksResponse> getLinks(Long id) {

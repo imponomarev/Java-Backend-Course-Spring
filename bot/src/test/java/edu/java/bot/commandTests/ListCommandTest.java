@@ -51,7 +51,7 @@ public class ListCommandTest {
             new LinkResponse(1L, URI.create("http://example.com"))
         ), 1);
 
-        when(scrapperClient.getLinks(123L)).thenReturn(Optional.of(response));
+        when(scrapperClient.retryGetLinks(123L)).thenReturn(Optional.of(response));
 
         SendMessage result = listCommand.handle(update);
 
@@ -63,7 +63,7 @@ public class ListCommandTest {
     void shouldReturnMessageWhenNoSubscriptions() {
         ListLinksResponse response = new ListLinksResponse(List.of(), 0);
 
-        when(scrapperClient.getLinks(123L)).thenReturn(Optional.of(response));
+        when(scrapperClient.retryGetLinks(123L)).thenReturn(Optional.of(response));
 
         SendMessage result = listCommand.handle(update);
 
@@ -72,7 +72,7 @@ public class ListCommandTest {
 
     @Test
     void shouldReturnErrorMessageOnFailure() {
-        when(scrapperClient.getLinks(123L)).thenThrow(new RuntimeException("Error fetching data"));
+        when(scrapperClient.retryGetLinks(123L)).thenThrow(new RuntimeException("Error fetching data"));
 
         SendMessage result = listCommand.handle(update);
 
