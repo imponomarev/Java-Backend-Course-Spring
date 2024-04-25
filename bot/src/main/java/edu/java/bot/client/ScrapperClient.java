@@ -6,13 +6,12 @@ import edu.java.bot.api.model.LinkResponse;
 import edu.java.bot.api.model.ListLinksResponse;
 import edu.java.bot.api.model.RemoveLinkRequest;
 import edu.java.bot.exceptions.ApiErrorException;
-import java.util.List;
-import java.util.Optional;
-
 import edu.java.bot.retry.BackoffType;
 import edu.java.bot.retry.RetryGenerator;
 import io.github.resilience4j.retry.Retry;
 import jakarta.annotation.PostConstruct;
+import java.util.List;
+import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpMethod;
