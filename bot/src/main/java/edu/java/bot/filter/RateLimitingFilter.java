@@ -16,7 +16,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 @RequiredArgsConstructor
 public class RateLimitingFilter extends OncePerRequestFilter {
     private final Bucket bucket;
-    private static final int STATUS_CODE = 429;
+    private static final int TOO_MANY_REQUESTS_STATUS_CODE = 429;
 
     @Override
     protected void doFilterInternal(
@@ -29,7 +29,7 @@ public class RateLimitingFilter extends OncePerRequestFilter {
         if (probe.isConsumed()) {
             chain.doFilter(request, response);
         } else {
-            response.setStatus(STATUS_CODE);
+            response.setStatus(TOO_MANY_REQUESTS_STATUS_CODE);
         }
     }
 }
