@@ -2,11 +2,9 @@ package edu.java.bot.service;
 
 import com.pengrad.telegrambot.TelegramBot;
 import com.pengrad.telegrambot.request.SendMessage;
-import edu.java.bot.api.model.LinkUpdateRequest;
-import edu.java.bot.exceptions.BadRequestException;
+import edu.java.api.model.LinkUpdateRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.validation.BindingResult;
 
 
 @Service
@@ -15,11 +13,7 @@ public class BotService {
 
     private final TelegramBot telegramBot;
 
-    public void add(LinkUpdateRequest linkUpdateRequest, BindingResult bindingResult) {
-
-        if (bindingResult.hasErrors()) {
-            throw new BadRequestException("Invalid request parameters", "Try again");
-        }
+    public void add(LinkUpdateRequest linkUpdateRequest) {
 
         String message = linkUpdateRequest.description();
 
