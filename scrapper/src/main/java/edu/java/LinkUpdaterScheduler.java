@@ -41,7 +41,7 @@ public class LinkUpdaterScheduler {
 
             if (description != null) {
                 List<Long> chatIds = linkService.getChatIdsOfLink(link.id());
-                botClient.sendUpdate(
+                botClient.retrySendUpdate(
                     new LinkUpdateRequest(
                         link.id(),
                         link.url(),

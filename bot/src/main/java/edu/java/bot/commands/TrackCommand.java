@@ -11,7 +11,6 @@ import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
-
 @Component
 @RequiredArgsConstructor
 public class TrackCommand implements Command {
@@ -19,7 +18,6 @@ public class TrackCommand implements Command {
     private final ScrapperClient scrapperClient;
     private static final String SUCCESSFULLY_SUBSCRIBED = "you have successfully subscribed to the resource";
     private static final String PATTERN = "\\s+";
-
 
     @Override
     public String command() {
@@ -44,7 +42,7 @@ public class TrackCommand implements Command {
             try {
                 URI uri = URI.create(uriStr);
                 Optional<LinkResponse> response =
-                    scrapperClient.addLink(update.message().chat().id(), new AddLinkRequest(uri));
+                    scrapperClient.retryAddLink(update.message().chat().id(), new AddLinkRequest(uri));
                 if (response.isPresent()) {
                     return new SendMessage(update.message().chat().id(), SUCCESSFULLY_SUBSCRIBED);
                 } else {

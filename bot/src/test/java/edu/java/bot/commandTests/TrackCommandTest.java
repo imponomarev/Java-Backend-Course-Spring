@@ -48,7 +48,7 @@ public class TrackCommandTest {
 
     @Test
     void shouldSubscribeSuccessfully() {
-        when(scrapperClient.addLink(eq(123L), any(AddLinkRequest.class))).thenReturn(Optional.of(new LinkResponse(1L, URI.create("https://example.com"))));
+        when(scrapperClient.retryAddLink(eq(123L), any(AddLinkRequest.class))).thenReturn(Optional.of(new LinkResponse(1L, URI.create("https://example.com"))));
 
         SendMessage response = trackCommand.handle(update);
 
@@ -57,7 +57,7 @@ public class TrackCommandTest {
 
     @Test
     void shouldHandleFailureToSubscribe() {
-        when(scrapperClient.addLink(eq(123L), any(AddLinkRequest.class))).thenReturn(Optional.empty());
+        when(scrapperClient.retryAddLink(eq(123L), any(AddLinkRequest.class))).thenReturn(Optional.empty());
 
         SendMessage response = trackCommand.handle(update);
 

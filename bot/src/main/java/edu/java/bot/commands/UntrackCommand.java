@@ -45,7 +45,7 @@ public class UntrackCommand implements Command {
 
             try {
 
-                scrapperClient.removeLink(update.message().chat().id(), new RemoveLinkRequest(link));
+                scrapperClient.retryRemoveLink(update.message().chat().id(), new RemoveLinkRequest(link));
                 return new SendMessage(
                     update.message().chat().id(),
                     SUCCESSFULLY_UNSUBSCRIBED

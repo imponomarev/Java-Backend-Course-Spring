@@ -16,7 +16,6 @@ public class StartCommand implements Command {
     private static final String SUCCESSFULLY_REGISTERED = "You have successfully registered";
     private static final String WRONG_COMMAND = "Enter /start to register in the bot";
 
-
     @Override
     public String command() {
         return "/start";
@@ -31,7 +30,7 @@ public class StartCommand implements Command {
     public SendMessage handle(Update update) {
         if (supports(update)) {
             try {
-                scrapperClient.registerChat(update.message().chat().id());
+                scrapperClient.retryRegisterChat(update.message().chat().id());
             } catch (Exception e) {
                 return new SendMessage(update.message().chat().id(), ALREADY_REGISTERED);
             }

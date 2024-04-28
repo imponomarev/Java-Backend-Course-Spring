@@ -6,9 +6,16 @@ import edu.java.bot.api.model.LinkResponse;
 import edu.java.bot.api.model.ListLinksResponse;
 import edu.java.bot.api.model.RemoveLinkRequest;
 import edu.java.bot.exceptions.ApiErrorException;
+import edu.java.bot.retry.BackoffType;
+import edu.java.bot.retry.RetryGenerator;
+import io.github.resilience4j.retry.Retry;
+import jakarta.annotation.PostConstruct;
+import java.util.List;
 import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
@@ -22,6 +29,19 @@ public class ScrapperClient {
     private static final String HEADER = "Tg-Chat-Id";
     private static final String ERROR_API_CALL = "Error making API call: {}";
     private final WebClient webClient;
+    private Retry retry;
+
+    @Value(value = "${api.scrapper.backOffType}")
+    private BackoffType backoffType;
+
+    @Value(value = "${api.scrapper.retryCount}")
+    private int retryCount;
+
+    @Value(value = "${api.scrapper.retryInterval}")
+    private int retryInterval;
+
+    @Value(value = "${api.scrapper.statuses}")
+    private List<HttpStatus> statuses;
 
     public ScrapperClient(String baseUrl) {
         this.webClient = WebClient.builder().baseUrl(baseUrl).build();
@@ -29,6 +49,13 @@ public class ScrapperClient {
 
     public ScrapperClient() {
         this.webClient = WebClient.builder().baseUrl(DEFAULT_URL).build();
+    }
+
+    @PostConstruct
+    private void initRetry() {
+        retry = RetryGenerator.generate(backoffType, retryCount, retryInterval, statuses,
+            "scrapper-client"
+        );
     }
 
     public Optional<String> registerChat(Long id) {
@@ -49,6 +76,10 @@ public class ScrapperClient {
             .blockOptional();
     }
 
+    public Optional<String> retryRegisterChat(Long id) {
+        return Retry.decorateSupplier(retry, () -> registerChat(id)).get();
+    }
+
     public Optional<String> deleteChat(Long id) {
         return webClient
             .delete()
@@ -64,6 +95,10 @@ public class ScrapperClient {
             )
             .bodyToMono(String.class)
             .blockOptional();
+    }
+
+    public Optional<String> retryDeleteChat(Long id) {
+        return Retry.decorateSupplier(retry, () -> deleteChat(id)).get();
     }
 
     public Optional<ListLinksResponse> getLinks(Long id) {
@@ -85,6 +120,10 @@ public class ScrapperClient {
             .blockOptional();
     }
 
+    public Optional<ListLinksResponse> retryGetLinks(Long id) {
+        return Retry.decorateSupplier(retry, () -> getLinks(id)).get();
+    }
+
     public Optional<LinkResponse> addLink(Long id, AddLinkRequest request) {
 
         try {
@@ -94,14 +133,16 @@ public class ScrapperClient {
                 .header(HEADER, id.toString())
                 .bodyValue(request)
                 .retrieve()
-                .onStatus(HttpStatusCode::is4xxClientError,
+                .onStatus(
+                    HttpStatusCode::is4xxClientError,
                     response -> response.bodyToMono(ApiErrorResponse.class)
                         .flatMap(apiError -> {
 
                             log.error(ERROR_API_CALL, apiError);
 
                             return Mono.error(new ApiErrorException(apiError));
-                        }))
+                        })
+                )
                 .bodyToMono(LinkResponse.class)
                 .blockOptional();
         } catch (ApiErrorException e) {
@@ -111,6 +152,10 @@ public class ScrapperClient {
             log.error("Unexpected error: {}", e.getMessage());
             return Optional.empty();
         }
+    }
+
+    public Optional<LinkResponse> retryAddLink(Long id, AddLinkRequest request) {
+        return Retry.decorateSupplier(retry, () -> addLink(id, request)).get();
     }
 
     public Optional<LinkResponse> removeLink(Long id, RemoveLinkRequest request) {
@@ -130,5 +175,9 @@ public class ScrapperClient {
             )
             .bodyToMono(LinkResponse.class)
             .blockOptional();
+    }
+
+    public Optional<LinkResponse> retryRemoveLink(Long id, RemoveLinkRequest request) {
+        return Retry.decorateSupplier(retry, () -> removeLink(id, request)).get();
     }
 }

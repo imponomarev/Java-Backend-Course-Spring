@@ -23,7 +23,7 @@ public class StackOverflowUpdater implements LinkUpdater {
 
         long questionId = Long.parseLong(link.url().getPath().split("/")[2]);
 
-        StackOverflowResponse response = stackOverflowWebClient.fetchQuestion(questionId).blockFirst();
+        StackOverflowResponse response = stackOverflowWebClient.retryFetchQuestion(questionId).blockFirst();
 
         OffsetDateTime lastCheck = OffsetDateTime.now();
         if (!link.lastUpdate().equals(response.lastActivityDate())) {

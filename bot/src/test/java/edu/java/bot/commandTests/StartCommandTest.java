@@ -46,13 +46,13 @@ public class StartCommandTest {
 
     @Test
     void handleStartTest() {
-        when(scrapperClient.registerChat(anyLong())).thenReturn(Optional.of("Success"));
+        when(scrapperClient.retryRegisterChat(anyLong())).thenReturn(Optional.of("Success"));
 
         SendMessage response = startCommand.handle(update);
 
         assertEquals("You have successfully registered", response.getParameters().get("text"));
         assertEquals(123L, response.getParameters().get("chat_id"));
-        verify(scrapperClient).registerChat(123L);
+        verify(scrapperClient).retryRegisterChat(123L);
     }
 
     @Test

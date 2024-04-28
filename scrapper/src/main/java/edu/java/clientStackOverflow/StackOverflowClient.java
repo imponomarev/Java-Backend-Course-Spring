@@ -6,4 +6,6 @@ public interface StackOverflowClient {
 
     Flux<StackOverflowResponse> fetchQuestion(long questionId);
 
+    Flux<StackOverflowResponse> retryFetchQuestion(long questionId);
+
 }
