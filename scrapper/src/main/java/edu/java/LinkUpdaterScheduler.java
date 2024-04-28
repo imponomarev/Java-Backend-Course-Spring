@@ -4,6 +4,7 @@ import edu.java.api.client.BotClient;
 import edu.java.api.model.LinkUpdateRequest;
 import edu.java.domain.jdbc.dto.LinkDto;
 import edu.java.services.LinkService;
+import edu.java.services.UpdateSender;
 import edu.java.updaters.LinkUpdater;
 import edu.java.updaters.UpdatersHolder;
 import java.util.List;
@@ -23,6 +24,8 @@ public class LinkUpdaterScheduler {
     private final LinkService linkService;
     private final BotClient botClient;
     private final UpdatersHolder updatersHolder;
+    private final UpdateSender updateSender;
+
 
     @Value("${app.scheduler.seconds-threshold}")
     private long threshold;
@@ -41,7 +44,7 @@ public class LinkUpdaterScheduler {
 
             if (description != null) {
                 List<Long> chatIds = linkService.getChatIdsOfLink(link.id());
-                botClient.retrySendUpdate(
+                updateSender.sendUpdate(
                     new LinkUpdateRequest(
                         link.id(),
                         link.url(),

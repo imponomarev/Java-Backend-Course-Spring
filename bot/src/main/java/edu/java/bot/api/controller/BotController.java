@@ -1,6 +1,6 @@
 package edu.java.bot.api.controller;
 
-import edu.java.bot.api.model.LinkUpdateRequest;
+import edu.java.api.model.LinkUpdateRequest;
 import edu.java.bot.service.BotService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -21,7 +21,7 @@ public class BotController {
     public String process(@RequestBody @Valid @NotNull LinkUpdateRequest linkUpdateRequest,
         BindingResult bindingResult) {
 
-        botService.add(linkUpdateRequest, bindingResult);
+        botService.add(linkUpdateRequest);
         return "The update has been processed";
 
     }

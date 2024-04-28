@@ -5,6 +5,10 @@ app:
     force-check-delay: 10s
     seconds-threshold: 60
   database-access-type: jpa
+  use-queue: true
+  kafka:
+    bootstrap-servers: localhost:9092
+    topic-name: bot-updates
 
 spring:
   application:
